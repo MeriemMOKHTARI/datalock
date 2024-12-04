@@ -1,0 +1,10 @@
+{
+    "appwriteEndpoint": "https://appwrite.datalock.mandem-it.com/v1",
+    "appwriteProjectId": "67154f620037871402af",
+    "sendSmsFunctionId": "673b44e0001261394912",
+    "mainDatabaseId": "671a5178001dbf2ebecd",
+    "collections": {
+      "userAuth": "671a518d002c1b90304c",
+      "errorLogs": "672bb71d000dd6e0ad0b"
+    }
+  }

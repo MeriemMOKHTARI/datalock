@@ -1,0 +1,26 @@
+{
+    "app_name": "DataLock",
+    "login_title": "Iniciar sesión en la aplicación",
+    "login_subtitle": "Para iniciar sesión o registrarse, ingrese su número de teléfono.",
+    "otp_subtitle":"comprobar número de teléfono",
+    "phone_number": "Número de teléfono",
+    "login": "Iniciar sesión",
+    "verify_phone": "Verificar número de teléfono",
+    "enter_otp": "Ingrese los cuatro dígitos enviados a su número",
+    "verify": "Verificar",
+    "didnt_receive_code": "¿No recibió el código?",
+    "resend": "Reenviar",
+    "blocked_user": "Usuario bloqueado",
+    "error": "Error: {}",
+    "complete_your_registration":"Completa tu registro",
+    "Please complete the information to complete your registration.":"Por favor, complete la información para completar su registro.",
+    "Connection":"Conexión",
+    "name":"Nombre",
+    "forename": "Nombre", 
+    "email":"email",  
+    "password":"Contraseña",
+    "home":"Inicio"
+
+  }
+  
+  

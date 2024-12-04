@@ -1,0 +1,24 @@
+{
+    "app_name": "داتالوك",
+    "login_title": "تسجيل الدخول إلى التطبيق",
+    "login_subtitle": "لتسجيل الدخول أو التسجيل، أدخل رقم هاتفك.",
+    "otp_subtitle":"التحقق من رقم الهاتف",
+    "phone_number": "رقم الهاتف",
+    "login": "تسجيل الدخول",
+    "verify_phone": "التحقق من رقم الهاتف",
+    "enter_otp": "أدخل الأرقام الأربعة المرسلة إلى رقمك",
+    "verify": "تحقق",
+    "didnt_receive_code": "لم تستلم الرمز؟",
+    "resend": "إعادة الإرسال",
+    "blocked_user": "المستخدم محظور",
+    "error": "خطأ: {}",
+    "complete_your_registration":"اكمل تسجيلك",
+    "Please complete the information to complete your registration.":"يرجى اكمال المعلومات لاكمال تسجيلك.",
+    "Connection":"اتصال",
+    "name":"اللقب",
+    "forename": "الاسم الاول",
+    "email":"البريد الالكتروني",  
+    "password":"كلمة المرور",
+    "home":"الرئيسية"
+
+  }

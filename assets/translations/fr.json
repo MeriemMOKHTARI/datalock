@@ -1,0 +1,23 @@
+{
+    "app_name": "Datalock",
+    "login_title": "Connexion à l'application",
+    "login_subtitle": "Pour vous connecter ou vous inscrire, introduisez votre numéro de téléphone.",
+    "otp_subtitle":"Vérifier le numéro de téléphone",
+    "phone_number": "Numéro de téléphone",
+    "login": "Connexion",
+    "verify_phone": "Vérifier le numéro de téléphone",
+    "enter_otp": "Entrez les 4 chiffres envoyés à votre numéro",
+    "verify": "Vérifier",
+    "didnt_receive_code": "Vous n'avez pas reçu le code ?",
+    "resend": "Renvoyer",
+    "blocked_user": "Utilisateur bloqué",
+    "error": "Erreur: {}",
+    "complete_your_registration":"Complétez votre inscription",
+    "Please complete the information to complete your registration.":"Veuillez compléter les informations pour compléter votre inscription.",
+    "Connection":"Connexion",
+    "name":"Nom",
+    "forename": "Prénom",
+    "email":"email",
+    "password":"Mot de passe",
+    "home":"Accueil"
+  }

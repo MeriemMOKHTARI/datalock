@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' as flutter;
 import 'package:appwrite/appwrite.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../components/phone_input.dart';
 import '../components/otp_input.dart';
@@ -8,6 +9,7 @@ import '../components/name_input.dart';
 import '../../config/config.dart';
 import '../../data/data_sources/auth_data_source.dart';
 import '../../data/repositories/auth_repository.dart';
+import '../../services/auth_service.dart';
 
 class AuthenticationScreen extends flutter.StatefulWidget {
   final Account account;
@@ -33,8 +35,7 @@ class _AuthenticationScreenState extends flutter.State<AuthenticationScreen> {
   @override
   void initState() {
     super.initState();
-    final authDataSource =
-        AuthDataSource(widget.account, widget.databases, widget.functions);
+    final authDataSource = AuthDataSource(widget.account, widget.databases, widget.functions);
     _authRepository = AuthRepository(authDataSource);
   }
 
@@ -127,18 +128,49 @@ class _AuthenticationScreenState extends flutter.State<AuthenticationScreen> {
                                   onBack: () => setState(() {
                                     isOtpScreen = false;
                                   }),
-                                  onVerify: () {
-                                    setState(() {
-                                      isNameScreen = true;
-                                    });
+                                  onVerify: (String otp) async {
+                                    print('Verifying OTP: $otp'); // Log the OTP being verified
+                                    final authService = AuthService();
+                                    try {
+                                      String result = await authService.VerifyOTP(
+                                        _phoneNumber!,
+                                        otp,
+                                        widget.account,
+                                        widget.databases,
+                                      );
+                                      print('OTP verification result: $result'); // Log the result
+
+                                      if (result == '200') {
+                                        print('OTP verified successfully');
+                                        setState(() {
+                                          isNameScreen = true;
+                                          isOtpScreen = false;
+                                        });
+                                      } else {
+                                        print('OTP verification failed with result: $result');
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(content: Text('Invalid OTP. Please try again.')),
+                                        );
+                                      }
+                                    } catch (e) {
+                                      print('Error during OTP verification: $e');
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text('An error occurred. Please try again.')),
+                                      );
+                                    }
                                   },
                                   phoneNumber: _phoneNumber!,
                                   userId: _userId!,
                                   authRepository: _authRepository,
+                                  onSubmit: (String userId, String phoneNumber) {
+                                    setState(() {
+                                      _userId = userId;
+                                      _phoneNumber = phoneNumber;
+                                    });
+                                  },
                                 )
                               : PhoneInput(
-                                  onSubmit:
-                                      (String userId, String phoneNumber) {
+                                  onSubmit: (String userId, String phoneNumber) {
                                     setState(() {
                                       _userId = userId;
                                       _phoneNumber = phoneNumber;
@@ -158,3 +190,4 @@ class _AuthenticationScreenState extends flutter.State<AuthenticationScreen> {
     );
   }
 }
+

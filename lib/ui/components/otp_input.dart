@@ -1,12 +1,20 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:appwrite/appwrite.dart';
+import 'package:datalock/config/config.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../widgets/otp_field.dart';
 import '../widgets/custom_button.dart';
+import '../../services/auth_service.dart';
 
 class OtpInput extends StatefulWidget {
+  final Function(String userId, String phoneNumber) onSubmit;
   final VoidCallback onBack;
-  final VoidCallback onVerify;
+  final Function(String otp) onVerify;
   final String phoneNumber;
   final String userId;
   final AuthRepository authRepository;
@@ -18,6 +26,7 @@ class OtpInput extends StatefulWidget {
     required this.phoneNumber,
     required this.userId,
     required this.authRepository,
+    required this.onSubmit,
   }) : super(key: key);
 
   @override
@@ -28,13 +37,45 @@ class _OtpInputState extends State<OtpInput> {
   final List<TextEditingController> otpControllers =
       List.generate(4, (index) => TextEditingController());
   String remainingTime = '';
+  String? ipAddress;
+  String entry_id = ID.unique();
+  final account = Config.getAccount();
+  final databases = Config.getDatabases();
 
-
+  String getPlatform() {
+    if (kIsWeb) {
+      return 'web';
+    } else if (Platform.isAndroid) {
+      return 'AND';
+    } else if (Platform.isIOS) {
+      return 'IOS';
+    } else {
+      return 'lin';
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    // sendOTP();
+    fetchAndSetIpAddress();
+    startCountdown();
+  }
+
+  Future<void> fetchAndSetIpAddress() async {
+    ipAddress = await getUserIpAddress();
+  }
+
+  Future<String> getUserIpAddress() async {
+    try {
+      final url = Uri.parse('https://api.ipify.org?format=text');
+      final httpClient = HttpClient();
+      final request = await httpClient.getUrl(url);
+      final response = await request.close();
+      final ip = await response.transform(utf8.decoder).first;
+      return ip;
+    } catch (e) {
+      return 'Error getting IP address: $e';
+    }
   }
 
   void startCountdown() {
@@ -42,32 +83,65 @@ class _OtpInputState extends State<OtpInput> {
     Stream.periodic(Duration(seconds: 1), (i) => remainingSeconds - i)
         .take(remainingSeconds + 1)
         .listen(
-          (seconds) {
-            if (mounted) {
-              setState(() {
-                remainingTime =
-                    '${(seconds ~/ 60).toString().padLeft(2, '0')}:${(seconds % 60).toString().padLeft(2, '0')}';
-              });
-            }
-          },
-          onDone: () {
-            if (mounted) {
-              setState(() {
-                remainingTime = '00:00';
-              });
-            }
-          },
-        );
+      (seconds) {
+        if (mounted) {
+          setState(() {
+            remainingTime =
+                '${(seconds ~/ 60).toString().padLeft(2, '0')}:${(seconds % 60).toString().padLeft(2, '0')}';
+          });
+        }
+      },
+      onDone: () {
+        if (mounted) {
+          setState(() {
+            remainingTime = '00:00';
+          });
+        }
+      },
+    );
   }
 
+  Future<void> resendOTP() async {
+    final authService = AuthService();
+    print('Resending OTP to: ${widget.phoneNumber}');
+    
+    String result = await authService.sendSMS(
+      widget.phoneNumber,
+      getPlatform(),
+      ipAddress ?? "255.255.255.255",
+      entry_id,
+      account,
+      databases,
+    );
 
-
-
+    if (result == '200') {
+      print('SMS resent successfully');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('OTP resent successfully')),
+      );
+      startCountdown();
+    } else {
+      print('Failed to resend SMS: $result');
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Failed to resend OTP. Please try again later.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    String otp = otpControllers.map((e) => e.text).join('');
-
     return SingleChildScrollView(
       child: Container(
         padding: EdgeInsets.all(24),
@@ -93,23 +167,21 @@ class _OtpInputState extends State<OtpInput> {
               ],
             ),
             SizedBox(height: 8),
-           
-               Text(
-                  'enter_otp'.tr() + '\n${widget.phoneNumber}',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 16,
-                  ),
-                ),
-             
+            Text(
+              'enter_otp'.tr() + '\n${widget.phoneNumber}',
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 16,
+              ),
+            ),
             SizedBox(height: 16),
             OtpField(controllers: otpControllers),
             SizedBox(height: 24),
             CustomButton(
-              // onPressed: () => verifyOTP(otp),
-              //PASSER DIRECTTT
-              onPressed:widget.onVerify,
-             
+              onPressed: () {
+                String otp = otpControllers.map((e) => e.text).join('');
+                widget.onVerify(otp);
+              },
               text: 'verify'.tr(),
             ),
             SizedBox(height: 16),
@@ -125,26 +197,27 @@ class _OtpInputState extends State<OtpInput> {
                     ),
                   ),
                   TextButton(
-                    onPressed: (){},
-                    // sendOTP,
+                    onPressed: remainingTime == '00:00' ? resendOTP : null,
                     child: Text(
-                     'resend'.tr(),
+                      'resend'.tr(),
                       style: TextStyle(
-                        color: Color.fromARGB(255, 206, 122, 11),
+                        color: remainingTime == '00:00'
+                            ? Color.fromARGB(255, 206, 122, 11)
+                            : Colors.grey,
                         decoration: TextDecoration.underline,
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
                       ),
                     ),
                   ),
-                   Text(
-                  remainingTime,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w600,
+                  Text(
+                    remainingTime,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black54,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
                 ],
               ),
             ),
@@ -154,3 +227,4 @@ class _OtpInputState extends State<OtpInput> {
     );
   }
 }
+

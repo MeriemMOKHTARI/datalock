@@ -130,12 +130,12 @@ Future<String> getUserIpAddress() async {  try {
             onPressed: isPhoneValid
     ? () async {
         final authService = AuthService();
-
+        print(completePhoneNumber! +    getPlatform() + ipAddress! + entry_id );
         // Call sendSMS and store the result in a variable
         String result = await authService.sendSMS(
           completePhoneNumber!,
           getPlatform(),
-          ipAddress!,
+          "255.255.255.255",
           entry_id,
           account,
           databases,

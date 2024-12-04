@@ -16,6 +16,8 @@ flutter.WidgetsFlutterBinding.ensureInitialized();
   String? savedLocale = prefs.getString('locale');
 
   final account = Config.getAccount();
+
+  
   final databases = Config.getDatabases();
   final functions = Config.getFunctions();
 

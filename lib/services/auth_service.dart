@@ -9,9 +9,6 @@ import '../config/config.dart';
 
 class AuthService {
     String? ipAddress ;
-
- 
-
     Future <String> sendSMS(String phoneNumber,String platform,String ipAdresseUser,String entry_id, Account account, Databases databases) async {
     Client client = Client()
         .setEndpoint(Config.appwriteEndpoint)
@@ -52,6 +49,7 @@ class AuthService {
     }
   }
 
+     // ignore: non_constant_identifier_names
      Future<String> VerifyOTP(String phoneNumber, String otp, Account account, Databases databases) async {
     Client client = Client()
         .setEndpoint(Config.appwriteEndpoint)
@@ -74,22 +72,20 @@ class AuthService {
         final responseBody = json.decode(result.responseBody);
         print('Decoded response body: $responseBody');
         
-        if (responseBody['status'] == 'OK') { // Changed from 200 to 'OK' to match potential string response
-          print('OTP verification successful');
+        if (responseBody['status'] == '200') { // Changed from 200 to 'OK' to match potential string response
           return '200';
-        } else if (responseBody['status'] == 'ERR') {
-          print('OTP verification failed: ${responseBody['error']}');
-          return '401';
-        } else {
-          print('Unexpected status in response: ${responseBody['status']}');
-          return '500';
+        } else if (responseBody['status'] == '600') {
+          return '600';
+        } else if (responseBody['status'] == '333') {
+          return '333';
+        }
+        else {
+                    return '500';
         }
       } else {
-        print('Function execution failed: ${result.status}');
         return '500';
       }
     } catch (e) {
-      print('Error verifying OTP: $e');
       return '500';
     }
   }

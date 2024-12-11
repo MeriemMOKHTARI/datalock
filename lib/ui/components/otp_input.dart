@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:datalock/config/config.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -41,6 +41,7 @@ class _OtpInputState extends State<OtpInput> {
   String entry_id = ID.unique();
   final account = Config.getAccount();
   final databases = Config.getDatabases();
+ 
 
   String getPlatform() {
     if (kIsWeb) {
@@ -104,7 +105,7 @@ class _OtpInputState extends State<OtpInput> {
   Future<void> resendOTP() async {
     final authService = AuthService();
     print('Resending OTP to: ${widget.phoneNumber}');
-    
+
     String result = await authService.sendSMS(
       widget.phoneNumber,
       getPlatform(),
@@ -178,11 +179,13 @@ class _OtpInputState extends State<OtpInput> {
             OtpField(controllers: otpControllers),
             SizedBox(height: 24),
             CustomButton(
-              onPressed: () {
-                String otp = otpControllers.map((e) => e.text).join('');
-                widget.onVerify(otp);
+              onPressed: () async {
+                // Bypass OTP verification
+                await widget.onSubmit(widget.userId, widget.phoneNumber);
+                // le passage à l'écran de saisie du nom
+                widget.onVerify('0000'); // On passe un code OTP factice
               },
-              text: 'verify'.tr(),
+              text: 'Continue'.tr(),
             ),
             SizedBox(height: 16),
             Center(
@@ -227,4 +230,3 @@ class _OtpInputState extends State<OtpInput> {
     );
   }
 }
-

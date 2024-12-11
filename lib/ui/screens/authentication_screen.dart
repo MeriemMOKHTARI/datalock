@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart' as flutter;
 import 'package:appwrite/appwrite.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../components/phone_input.dart';
 import '../components/otp_input.dart';
@@ -68,28 +67,33 @@ class _AuthenticationScreenState extends flutter.State<AuthenticationScreen> {
               width: screenWidth,
               child: flutter.Stack(
                 children: [
-                  flutter.PopupMenuButton<String>(
-                    onSelected: _changeLanguage,
-                    itemBuilder: (flutter.BuildContext context) {
-                      return [
-                        flutter.PopupMenuItem<String>(
-                          value: 'en',
-                          child: flutter.Text('English'),
-                        ),
-                        flutter.PopupMenuItem<String>(
-                          value: 'fr',
-                          child: flutter.Text('Français'),
-                        ),
-                        flutter.PopupMenuItem<String>(
-                          value: 'ar',
-                          child: flutter.Text('العربية'),
-                        ),
-                        flutter.PopupMenuItem<String>(
-                          value: 'es',
-                          child: flutter.Text('Español'),
-                        ),
-                      ];
-                    },
+                  flutter.Positioned(
+                    top: 10,
+                    right: 10,
+                    child: flutter.PopupMenuButton<String>(
+                      onSelected: _changeLanguage,
+                      itemBuilder: (flutter.BuildContext context) {
+                        return [
+                          flutter.PopupMenuItem<String>(
+                            value: 'en',
+                            child: flutter.Text('English'),
+                          ),
+                          flutter.PopupMenuItem<String>(
+                            value: 'fr',
+                            child: flutter.Text('Français'),
+                          ),
+                          flutter.PopupMenuItem<String>(
+                            value: 'ar',
+                            child: flutter.Text('العربية'),
+                          ),
+                          flutter.PopupMenuItem<String>(
+                            value: 'es',
+                            child: flutter.Text('Español'),
+                          ),
+                        ];
+                      },
+                      child: flutter.Icon(flutter.Icons.more_vert, color: flutter.Colors.white),
+                    ),
                   ),
                   flutter.Positioned(
                     top: screenHeight * 0.10,
@@ -129,35 +133,12 @@ class _AuthenticationScreenState extends flutter.State<AuthenticationScreen> {
                                     isOtpScreen = false;
                                   }),
                                   onVerify: (String otp) async {
-                                    print('Verifying OTP: $otp'); // Log the OTP being verified
-                                    final authService = AuthService();
-                                    try {
-                                      String result = await authService.VerifyOTP(
-                                        _phoneNumber!,
-                                        otp,
-                                        widget.account,
-                                        widget.databases,
-                                      );
-                                      print('OTP verification result: $result'); // Log the result
-
-                                      if (result == '200') {
-                                        print('OTP verified successfully');
-                                        setState(() {
-                                          isNameScreen = true;
-                                          isOtpScreen = false;
-                                        });
-                                      } else {
-                                        print('OTP verification failed with result: $result');
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: Text('Invalid OTP. Please try again.')),
-                                        );
-                                      }
-                                    } catch (e) {
-                                      print('Error during OTP verification: $e');
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text('An error occurred. Please try again.')),
-                                      );
-                                    }
+                                    // Bypass OTP verification
+                                    print('Bypassing OTP verification');
+                                    setState(() {
+                                      isNameScreen = true;
+                                      isOtpScreen = false;
+                                    });
                                   },
                                   phoneNumber: _phoneNumber!,
                                   userId: _userId!,
@@ -166,6 +147,8 @@ class _AuthenticationScreenState extends flutter.State<AuthenticationScreen> {
                                     setState(() {
                                       _userId = userId;
                                       _phoneNumber = phoneNumber;
+                                      isNameScreen = true;
+                                      isOtpScreen = false;
                                     });
                                   },
                                 )

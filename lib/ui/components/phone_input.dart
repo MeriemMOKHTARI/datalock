@@ -164,24 +164,25 @@ Future<String> getUserIpAddress() async {  try {
             },
           );
         } else if (result == '401') {
+           widget.onSubmit(entry_id, completePhoneNumber!);
           
-          print('Failed to send SMS');
+          // print('Failed to send SMS');
           
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text('Error'),
-                content: Text('Failed to send SMS. Please try again later.'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text('OK'),
-                  ),
-                ],
-              );
-            },
-          );
+          // showDialog(
+          //   context: context,
+          //   builder: (context) {
+          //     return AlertDialog(
+          //       title: Text('Error'),
+          //       content: Text('Failed to send SMS. Please try again later.'),
+          //       actions: [
+          //         TextButton(
+          //           onPressed: () => Navigator.of(context).pop(),
+          //           child: Text('OK'),
+          //         ),
+          //       ],
+          //     );
+          //   },
+          // );
         }
       }
     : null,

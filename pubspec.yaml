@@ -46,6 +46,8 @@ dependencies:
   easy_localization: ^3.0.2
   shared_preferences: ^2.1.1
   smooth_page_indicator: ^1.0.0
+  flutter_secure_storage: ^9.2.2
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_test:

@@ -55,7 +55,6 @@ class Config {
   );
 
   // Logo Configuration
-  static const String logoLottieUrl = 'https://lottie.host/87e10d71-08c2-42d2-844b-2f0359649d3b/3EcfwwMjIt.json';
   static const String appName = 'Datalock';
 
   // Logo Widget

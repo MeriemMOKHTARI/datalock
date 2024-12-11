@@ -1,11 +1,13 @@
+import 'package:datalock/ui/screens/HomePage.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../data/models/user_model.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class NameInput extends StatelessWidget {
+class NameInput extends StatefulWidget {
   final VoidCallback onBack;
   final VoidCallback onSubmit;
   final String userId;
@@ -22,28 +24,70 @@ class NameInput extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController prenomController = TextEditingController();
-    final TextEditingController emailController = TextEditingController();
+  _NameInputState createState() => _NameInputState();
+}
 
+class _NameInputState extends State<NameInput> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController prenomController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+
+  final FlutterSecureStorage storage = FlutterSecureStorage();
+
+  Future<void> saveUserSession(String phoneNumber, String userId) async {
+    try {
+      await storage.write(key: 'phone_number', value: phoneNumber);
+      await storage.write(key: 'user_id', value: userId);
+    } catch (e) {
+      print('Error saving user session: $e');
+    }
+  }
+
+  @override
+  void dispose() {
+    // Libérez les ressources des contrôleurs
+    nameController.dispose();
+    prenomController.dispose();
+    emailController.dispose();
+    super.dispose();
+  }
+
+  void handleNameSubmit(String name, String prenom, String email) async {
+    UserModel user = UserModel(
+      id: widget.userId,
+      phoneNumber: widget.phoneNumber,
+      name: name,
+      prenom: prenom,
+      email: email,
+    );
+
+    try {
+      // Appeler une méthode pour enregistrer les informations utilisateur si nécessaire
+      widget.onSubmit();
+    } catch (e) {
+      print('Error submitting user info: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        padding: EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: onBack,
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: widget.onBack,
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     'complete_your_registration'.tr(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
@@ -51,32 +95,60 @@ class NameInput extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
-              'Please complete the information to complete your registration.'.tr(),
+              'Please complete the information to complete your registration.'
+                  .tr(),
               style: TextStyle(
                 color: Colors.grey[600],
                 fontSize: 16,
               ),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             CustomTextField(
               controller: nameController,
               hintText: 'name'.tr(),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             CustomTextField(
               controller: prenomController,
               hintText: 'forename'.tr(),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             CustomTextField(
               controller: emailController,
               hintText: 'email'.tr(),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             CustomButton(
-              onPressed: () => handleNameSubmit(nameController.text, emailController.text),
+              onPressed: () async {
+                final email = emailController.text;
+                final name = nameController.text;
+                final prenom = prenomController.text;
+
+                final emailRegExp =
+                    RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                if ((email.isEmpty || !emailRegExp.hasMatch(email)) ||
+                    name.isEmpty ||
+                    prenom.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                          'Please enter valid information in all fields.'.tr()),
+                    ),
+                  );
+                } else {
+                  await saveUserSession(widget.phoneNumber, widget.userId);
+                  handleNameSubmit(name, prenom, email);
+
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomePage(),
+                    ),
+                  );
+                }
+              },
               text: 'Connection'.tr(),
             ),
           ],
@@ -84,21 +156,4 @@ class NameInput extends StatelessWidget {
       ),
     );
   }
-
-  void handleNameSubmit(String name, String email) async {
-    UserModel user = UserModel(
-      id: userId,
-      phoneNumber: phoneNumber,
-      name: name,
-      email: email,
-    );
-
-    try {
-      // await authRepository.saveUserInfo(user);
-      onSubmit();
-    } catch (e) {
-      // Gérer l'erreur
-    }
-  }
 }
-

@@ -1,7 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import './authentication_screen.dart';
+import '../../config/config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  Future<void> logout(BuildContext context) async {
+    final storage = FlutterSecureStorage();
+    final prefs = await SharedPreferences.getInstance();
+    final account = Config.getAccount();
+    final databases = Config.getDatabases();
+    final functions = Config.getFunctions();
+
+    try {
+      // Delete user session data
+      await storage.delete(key: 'phone_number');
+      await storage.delete(key: 'user_id');
+
+      // Reset language preference
+      await prefs.remove('locale');
+
+      print("User logged out and preferences reset.");
+      
+      // Navigate to the authentication screen after logout
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => AuthenticationScreen(
+          account: account,
+          databases: databases,
+          functions: functions,
+        )),
+      );
+    } catch (e) {
+      print('Error during logout: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +64,8 @@ class HomePage extends StatelessWidget {
                       ],
                     ),
                     TextButton(
-                      onPressed: () {},
-                      child: const Text('Filter'),
+                      onPressed: () => logout(context),
+                      child: const Text('Logout'),
                     ),
                   ],
                 ),
@@ -249,3 +283,4 @@ class RestaurantCard extends StatelessWidget {
     );
   }
 }
+

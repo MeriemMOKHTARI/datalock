@@ -1,11 +1,16 @@
+import 'dart:io';
+
+import 'package:datalock/config/config.dart';
 import 'package:datalock/ui/screens/HomePage.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../data/models/user_model.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../../services/auth_service.dart';
 
 class NameInput extends StatefulWidget {
   final VoidCallback onBack;
@@ -33,6 +38,20 @@ class _NameInputState extends State<NameInput> {
   final TextEditingController emailController = TextEditingController();
 
   final FlutterSecureStorage storage = FlutterSecureStorage();
+  final account = Config.getAccount();
+  final databases = Config.getDatabases();
+  final functions = Config.getFunctions();
+  String getPlatform() {
+    if (kIsWeb) {
+      return 'web';
+    } else if (Platform.isAndroid) {
+      return 'AND';
+    } else if (Platform.isIOS) {
+      return 'IOS';
+    } else {
+      return 'lin'; // For other platforms if needed  }
+    }
+  }
 
   Future<void> saveUserSession(String phoneNumber, String userId) async {
     try {
@@ -126,8 +145,7 @@ class _NameInputState extends State<NameInput> {
                 final name = nameController.text;
                 final prenom = prenomController.text;
 
-                final emailRegExp =
-                    RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                 if ((email.isEmpty || !emailRegExp.hasMatch(email)) ||
                     name.isEmpty ||
                     prenom.isEmpty) {
@@ -138,15 +156,32 @@ class _NameInputState extends State<NameInput> {
                     ),
                   );
                 } else {
-                  await saveUserSession(widget.phoneNumber, widget.userId);
-                  handleNameSubmit(name, prenom, email);
+                  final authService = AuthService();
+                  String result = await authService.saveUserInfos(
+                      widget.phoneNumber,
+                      getPlatform(),
+                      "255.255.255.255",
+                      widget.userId,
+                      name,
+                      prenom,
+                      email,
+                      account,
+                      databases);
 
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomePage(),
-                    ),
-                  );
+                  // Handle the result
+                  if (result == '400') {
+                    print('please provide all informations');
+                  } else if (result == '200') {
+                    print('infos saved successfully');
+                    await saveUserSession(widget.phoneNumber, widget.userId);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomePage(),
+                      ),
+                    );
+                  } 
+                  handleNameSubmit(name, prenom, email);
                 }
               },
               text: 'Connection'.tr(),

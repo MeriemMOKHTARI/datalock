@@ -30,12 +30,17 @@ class PhoneInput extends flutter.StatefulWidget {
 class _PhoneInputState extends flutter.State<PhoneInput> {
   final TextEditingController phoneController = TextEditingController();
   bool isPhoneValid = false;
+    bool showError = false;
   String? completePhoneNumber;
       String? ipAddress ;
       String entry_id=ID.unique();
       final account = Config.getAccount();
   final databases = Config.getDatabases();
-
+  String lastValidNumber = '';
+  String? errorMessage;
+ bool _isNumericOnly(String str) {
+    return RegExp(r'^[0-9]+$').hasMatch(str);
+  }
     String getPlatform() {  if (kIsWeb) {
     return 'web';  } else if (Platform.isAndroid) {
     return 'AND';  } else if (Platform.isIOS) {
@@ -61,6 +66,12 @@ Future<String> getUserIpAddress() async {  try {
     final ip = await response.transform(utf8.decoder).first;    return ip;
   } catch (e) {    return 'Error getting IP address: $e';
   }}
+    bool _validatePhoneNumber(String number) {
+    // Vous pouvez ajouter ici votre logique de validation spécifique
+    // Par exemple, vérifier si le numéro commence par certains chiffres
+    return number.length == 9; // Pour l'instant, vérifie juste la longueur
+  }
+
 
 // void handlePhoneSubmit(PhoneNumber phoneNumber) {
 //     // Directly call onSubmit with dummy userId and the entered phone number
@@ -95,36 +106,58 @@ Future<String> getUserIpAddress() async {  try {
                 color: flutter.Colors.grey[100],
                 borderRadius: flutter.BorderRadius.circular(12),
               ),
-              child: IntlPhoneField(
-                controller: phoneController,
-                decoration: flutter.InputDecoration(
-                  hintText: 'phone_number'.tr(),
-                  counterText: '',
-                  border: flutter.OutlineInputBorder(
-                    borderRadius: flutter.BorderRadius.circular(12),
-                    borderSide: flutter.BorderSide.none,
-                  ),
-                  contentPadding: flutter.EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 16,
-                  ),
-                  filled: true,
-                  fillColor: flutter.Colors.grey[100],
-                ),
-                initialCountryCode: 'DZ',
-                disableLengthCheck: false,
-                dropdownDecoration: flutter.BoxDecoration(
-                  borderRadius: flutter.BorderRadius.circular(12),
-                ),
-                flagsButtonPadding: flutter.EdgeInsets.symmetric(horizontal: 8),
-                onChanged: (phone) {
-                  setState(() {
-                    isPhoneValid = phone.number.length >= 9;
-                    completePhoneNumber = phone.completeNumber;
-                  });
-                },
-              ),
-            ),
+              child:    IntlPhoneField(
+                    controller: phoneController,
+                    decoration: flutter.InputDecoration(
+                      hintText: 'phone_number'.tr(),
+                      counterText: '',
+                      errorText: errorMessage, // Ajout du message d'erreur ici
+                      border: flutter.OutlineInputBorder(
+                        borderRadius: flutter.BorderRadius.circular(12),
+                        borderSide: flutter.BorderSide.none,
+                      ),
+                      contentPadding: flutter.EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 16,
+                      ),
+                      filled: true,
+                      fillColor: flutter.Colors.grey[100],
+                    ),
+                    initialCountryCode: 'DZ',
+                    disableLengthCheck: true,
+                    dropdownDecoration: flutter.BoxDecoration(
+                      borderRadius: flutter.BorderRadius.circular(12),
+                    ),
+                    flagsButtonPadding: flutter.EdgeInsets.symmetric(horizontal: 8),
+                    onChanged: (phone) {
+                      setState(() {
+                        if (phone.number.isEmpty) {
+                          errorMessage = null;
+                          isPhoneValid = false;
+                        } else if (!_isNumericOnly(phone.number)) {
+                          errorMessage = 'Invalid phone number';
+                          isPhoneValid = false;
+                        } else if (phone.number.length == 9) {
+                          errorMessage = null;
+                          isPhoneValid = true;
+                        } else if (phone.number.length > 9) {
+                          // Restaurer aux 9 premiers chiffres
+                          phoneController.value = phoneController.value.copyWith(
+                            text: lastValidNumber,
+                            selection: TextSelection.collapsed(offset: lastValidNumber.length),
+                          );
+                        } else {
+                          errorMessage = null;
+                          isPhoneValid = false;
+                        }
+
+                        if (phone.number.length <= 9) {
+                          lastValidNumber = phone.number;
+                          completePhoneNumber = phone.completeNumber;
+                        }
+                      });
+                    },
+                  ),            ),
             flutter.SizedBox(height: 24),
             CustomButton(
             onPressed: isPhoneValid

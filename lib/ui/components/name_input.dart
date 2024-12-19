@@ -179,7 +179,7 @@ class _NameInputState extends State<NameInput> {
                       MaterialPageRoute(
                         builder: (context) => HomePage(),
                       ),
-                    );
+                    );//meriem
                   } 
                   handleNameSubmit(name, prenom, email);
                 }

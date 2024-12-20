@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:appwrite/appwrite.dart';
 import 'package:datalock/config/config.dart';
+import 'package:datalock/ui/components/otp_input.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' as flutter;
 import 'package:flutter/material.dart';
@@ -12,15 +13,14 @@ import '../../data/repositories/auth_repository.dart';
 import '../widgets/custom_button.dart';
 import '../../services/auth_service.dart';
 
-
 class PhoneInput extends flutter.StatefulWidget {
-  final Function(String userId, String phoneNumber) onSubmit;
-
+  final Function(String userId, String phoneNumber,String result) onSubmit;
 
   const PhoneInput({
     flutter.Key? key,
     required this.onSubmit,
-    require, required AuthRepository authRepository,
+    require,
+    required AuthRepository authRepository,
   }) : super(key: key);
 
   @override
@@ -30,25 +30,31 @@ class PhoneInput extends flutter.StatefulWidget {
 class _PhoneInputState extends flutter.State<PhoneInput> {
   final TextEditingController phoneController = TextEditingController();
   bool isPhoneValid = false;
-    bool showError = false;
+  bool showError = false;
   String? completePhoneNumber;
-      String? ipAddress ;
-      String entry_id=ID.unique();
-      final account = Config.getAccount();
+  String? ipAddress;
+    bool isOtpScreen = false;
+
+  String entry_id = ID.unique();
+  final account = Config.getAccount();
   final databases = Config.getDatabases();
   String lastValidNumber = '';
   String? errorMessage;
- bool _isNumericOnly(String str) {
+  bool _isNumericOnly(String str) {
     return RegExp(r'^[0-9]+$').hasMatch(str);
   }
-    String getPlatform() {  if (kIsWeb) {
-    return 'web';  } else if (Platform.isAndroid) {
-    return 'AND';  } else if (Platform.isIOS) {
-    return 'IOS';  } else {
-    return 'lin'; // For other platforms if needed  }
-}
 
-}
+  String getPlatform() {
+    if (kIsWeb) {
+      return 'web';
+    } else if (Platform.isAndroid) {
+      return 'AND';
+    } else if (Platform.isIOS) {
+      return 'IOS';
+    } else {
+      return 'lin'; // For other platforms if needed  }
+    }
+  }
 
   @override
   void initState() {
@@ -56,22 +62,28 @@ class _PhoneInputState extends flutter.State<PhoneInput> {
     fetchAndSetIpAddress();
   }
 
+  Future<void> fetchAndSetIpAddress() async {
+    ipAddress = await getUserIpAddress();
+  }
 
-Future<void> fetchAndSetIpAddress() async {
-  ipAddress = await getUserIpAddress();}
+  Future<String> getUserIpAddress() async {
+    try {
+      final url = Uri.parse('https://api.ipify.org?format=text');
+      final httpClient = HttpClient();
+      final request = await httpClient.getUrl(url);
+      final response = await request.close();
+      final ip = await response.transform(utf8.decoder).first;
+      return ip;
+    } catch (e) {
+      return 'Error getting IP address: $e';
+    }
+  }
 
-Future<String> getUserIpAddress() async {  try {
-    final url = Uri.parse('https://api.ipify.org?format=text');    final httpClient = HttpClient();
-    final request = await httpClient.getUrl(url);    final response = await request.close();
-    final ip = await response.transform(utf8.decoder).first;    return ip;
-  } catch (e) {    return 'Error getting IP address: $e';
-  }}
-    bool _validatePhoneNumber(String number) {
+  bool _validatePhoneNumber(String number) {
     // Vous pouvez ajouter ici votre logique de validation spécifique
     // Par exemple, vérifier si le numéro commence par certains chiffres
     return number.length == 9; // Pour l'instant, vérifie juste la longueur
   }
-
 
 // void handlePhoneSubmit(PhoneNumber phoneNumber) {
 //     // Directly call onSubmit with dummy userId and the entered phone number
@@ -106,121 +118,126 @@ Future<String> getUserIpAddress() async {  try {
                 color: flutter.Colors.grey[100],
                 borderRadius: flutter.BorderRadius.circular(12),
               ),
-              child:    IntlPhoneField(
-                    controller: phoneController,
-                    decoration: flutter.InputDecoration(
-                      hintText: 'phone_number'.tr(),
-                      counterText: '',
-                      errorText: errorMessage, // Ajout du message d'erreur ici
-                      border: flutter.OutlineInputBorder(
-                        borderRadius: flutter.BorderRadius.circular(12),
-                        borderSide: flutter.BorderSide.none,
-                      ),
-                      contentPadding: flutter.EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 16,
-                      ),
-                      filled: true,
-                      fillColor: flutter.Colors.grey[100],
-                    ),
-                    initialCountryCode: 'DZ',
-                    disableLengthCheck: true,
-                    dropdownDecoration: flutter.BoxDecoration(
-                      borderRadius: flutter.BorderRadius.circular(12),
-                    ),
-                    flagsButtonPadding: flutter.EdgeInsets.symmetric(horizontal: 8),
-                    onChanged: (phone) {
-                      setState(() {
-                        if (phone.number.isEmpty) {
-                          errorMessage = null;
-                          isPhoneValid = false;
-                        } else if (!_isNumericOnly(phone.number)) {
-                          errorMessage = 'Invalid phone number';
-                          isPhoneValid = false;
-                        } else if (phone.number.length == 9) {
-                          errorMessage = null;
-                          isPhoneValid = true;
-                        } else if (phone.number.length > 9) {
-                          // Restaurer aux 9 premiers chiffres
-                          phoneController.value = phoneController.value.copyWith(
-                            text: lastValidNumber,
-                            selection: TextSelection.collapsed(offset: lastValidNumber.length),
-                          );
-                        } else {
-                          errorMessage = null;
-                          isPhoneValid = false;
-                        }
+              child: IntlPhoneField(
+                controller: phoneController,
+                decoration: flutter.InputDecoration(
+                  hintText: 'phone_number'.tr(),
+                  counterText: '',
+                  errorText: errorMessage, // Ajout du message d'erreur ici
+                  border: flutter.OutlineInputBorder(
+                    borderRadius: flutter.BorderRadius.circular(12),
+                    borderSide: flutter.BorderSide.none,
+                  ),
+                  contentPadding: flutter.EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
+                  filled: true,
+                  fillColor: flutter.Colors.grey[100],
+                ),
+                initialCountryCode: 'DZ',
+                disableLengthCheck: true,
+                dropdownDecoration: flutter.BoxDecoration(
+                  borderRadius: flutter.BorderRadius.circular(12),
+                ),
+                flagsButtonPadding: flutter.EdgeInsets.symmetric(horizontal: 8),
+                onChanged: (phone) {
+                  setState(() {
+                    if (phone.number.isEmpty) {
+                      errorMessage = null;
+                      isPhoneValid = false;
+                    } else if (!_isNumericOnly(phone.number)) {
+                      errorMessage = 'Invalid phone number';
+                      isPhoneValid = false;
+                    } else if (phone.number.length == 9) {
+                      errorMessage = null;
+                      isPhoneValid = true;
+                    } else if (phone.number.length > 9) {
+                      // Restaurer aux 9 premiers chiffres
+                      phoneController.value = phoneController.value.copyWith(
+                        text: lastValidNumber,
+                        selection: TextSelection.collapsed(
+                            offset: lastValidNumber.length),
+                      );
+                    } else {
+                      errorMessage = null;
+                      isPhoneValid = false;
+                    }
 
-                        if (phone.number.length <= 9) {
-                          lastValidNumber = phone.number;
-                          completePhoneNumber = phone.completeNumber;
-                        }
-                      });
-                    },
-                  ),            ),
+                    if (phone.number.length <= 9) {
+                      lastValidNumber = phone.number;
+                      completePhoneNumber = phone.completeNumber;
+                    }
+                  });
+                },
+              ),
+            ),
             flutter.SizedBox(height: 24),
             CustomButton(
-            onPressed: isPhoneValid
-    ? () async {
-        final authService = AuthService();
-        print(completePhoneNumber! +    getPlatform() + ipAddress! + entry_id );
-        // Call sendSMS and store the result in a variable
-        String result = await authService.sendSMS(
-          completePhoneNumber!,
-          getPlatform(),
-          "255.255.255.255",
-          entry_id,
-          account,
-          databases,
-        );
+              onPressed: isPhoneValid
+                  ? () async {
+                      final authService = AuthService();
+                      
+                      // Call sendSMS and store the result in a variable
+                      String result = await authService.sendSMS(
+                        completePhoneNumber!,
+                        getPlatform(),
+                        "255.255.255.255",
+                        entry_id,
+                        account,
+                        databases,
+                      );
+print(completePhoneNumber! +
+                          getPlatform() +
+                          "255.255.255.255" +
+                          entry_id);
+                      // Handle the result
+                      if (result == '200') {
+                        print(
+                            'SMS sent successfully, navigating to OTP screen...');
+                        widget.onSubmit(entry_id, completePhoneNumber!,result);
+                      } else if (result == '333') {
+                        // Handle blocked user
+                        print('User is blocked');
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text('Blocked User'),
+                              content: Text('Your account has been blocked.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else if (result == '401') {
+                        widget.onSubmit(entry_id, completePhoneNumber!,result);
 
-        // Handle the result
-        if (result == '200') {
-          print('SMS sent successfully, navigating to OTP screen...');
-          widget.onSubmit(entry_id, completePhoneNumber!);
-        } else if (result == '333') {
-          // Handle blocked user
-          print('User is blocked');
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text('Blocked User'),
-                content: Text('Your account has been blocked.'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text('OK'),
-                  ),
-                ],
-              );
-            },
-          );
-        } else if (result == '401') {
-           widget.onSubmit(entry_id, completePhoneNumber!);
-          
-          // print('Failed to send SMS');
-          
-          // showDialog(
-          //   context: context,
-          //   builder: (context) {
-          //     return AlertDialog(
-          //       title: Text('Error'),
-          //       content: Text('Failed to send SMS. Please try again later.'),
-          //       actions: [
-          //         TextButton(
-          //           onPressed: () => Navigator.of(context).pop(),
-          //           child: Text('OK'),
-          //         ),
-          //       ],
-          //     );
-          //   },
-          // );
-        }
-      }
-    : null,
+                        print('Failed to send SMS');
 
-
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text('Error'),
+                              content: Text(
+                                  'Failed to send SMS. Please try again later.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    }
+                  : null,
               text: 'login'.tr(),
             ),
           ],
@@ -241,4 +258,3 @@ class PhoneNumber {
     required this.isoCode,
   });
 }
-

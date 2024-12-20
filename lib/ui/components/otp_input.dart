@@ -12,12 +12,11 @@ import '../widgets/custom_button.dart';
 import '../../services/auth_service.dart';
 
 class OtpInput extends StatefulWidget {
-  final Function(String userId, String phoneNumber) onSubmit;
+  final Function(String userId, String phoneNumber, String result) onSubmit;
   final VoidCallback onBack;
   final Function(String otp) onVerify;
   final String phoneNumber;
   final String userId;
-  final AuthRepository authRepository;
 
   const OtpInput({
     Key? key,
@@ -25,7 +24,6 @@ class OtpInput extends StatefulWidget {
     required this.onVerify,
     required this.phoneNumber,
     required this.userId,
-    required this.authRepository,
     required this.onSubmit,
   }) : super(key: key);
 
@@ -181,9 +179,30 @@ class _OtpInputState extends State<OtpInput> {
             CustomButton(
               onPressed: () async {
                 // Bypass OTP verification
-                await widget.onSubmit(widget.userId, widget.phoneNumber);
-                // le passage à l'écran de saisie du nom
-                widget.onVerify('0000'); // On passe un code OTP factice
+                final authService = AuthService();
+                String result = await authService.VerifyOTP(
+                  widget.phoneNumber,
+                  otpControllers.map((controller) => controller.text).join(''),
+                  account,
+                  databases,
+                );
+                if (result == '200') {
+                  await widget.onSubmit(widget.userId, widget.phoneNumber,result);
+                } else if (result == '400') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('please provide a valid OTP')),
+                  );
+                } else if (result == '333') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('incorrect OTP')),
+                  );
+                } else if (result == 'ERR') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error')),
+                  );
+                } else {  
+                 
+                }
               },
               text: 'Continue'.tr(),
             ),

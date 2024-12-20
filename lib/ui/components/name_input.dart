@@ -174,12 +174,22 @@ class _NameInputState extends State<NameInput> {
                   } else if (result == '200') {
                     print('infos saved successfully');
                     await saveUserSession(widget.phoneNumber, widget.userId);
-                    Navigator.pushReplacement(
+                    String result2 = await authService.uploadUserSession(
+                        widget.phoneNumber, widget.userId, account, databases);
+                    if (result2 == '200') {
+                      print('session saved successfully');
+                      Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (context) => HomePage(),
                       ),
-                    );//meriem
+                    );
+                    } else if (result2 == '400') {
+                      print('please provide all informations');
+                    } else {
+                      print('session not saved');
+                    }
+                    
                   } 
                   handleNameSubmit(name, prenom, email);
                 }

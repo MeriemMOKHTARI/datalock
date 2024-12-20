@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' as flutter;
 import 'package:appwrite/appwrite.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -30,11 +33,25 @@ class _AuthenticationScreenState extends flutter.State<AuthenticationScreen> {
   late AuthRepository _authRepository;
   String? _userId;
   String? _phoneNumber;
+  String? _platform;
+  String? _ipadress;
+  String getPlatform() {
+    if (kIsWeb) {
+      return 'web';
+    } else if (Platform.isAndroid) {
+      return 'AND';
+    } else if (Platform.isIOS) {
+      return 'IOS';
+    } else {
+      return 'lin'; // For other platforms if needed  }
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    final authDataSource = AuthDataSource(widget.account, widget.databases, widget.functions);
+    final authDataSource =
+        AuthDataSource(widget.account, widget.databases, widget.functions);
     _authRepository = AuthRepository(authDataSource);
   }
 
@@ -92,7 +109,8 @@ class _AuthenticationScreenState extends flutter.State<AuthenticationScreen> {
                           ),
                         ];
                       },
-                      child: flutter.Icon(flutter.Icons.more_vert, color: flutter.Colors.white),
+                      child: flutter.Icon(flutter.Icons.more_vert,
+                          color: flutter.Colors.white),
                     ),
                   ),
                   flutter.Positioned(
@@ -135,31 +153,46 @@ class _AuthenticationScreenState extends flutter.State<AuthenticationScreen> {
                                   onVerify: (String otp) async {
                                     // Bypass OTP verification
                                     print('Bypassing OTP verification');
-                                    setState(() {
-                                      isNameScreen = true;
-                                      isOtpScreen = false;
-                                    });
+                                    // setState(() {
+                                    //   isNameScreen = true;
+                                    //   isOtpScreen = false;
+                                    // });
                                   },
                                   phoneNumber: _phoneNumber!,
                                   userId: _userId!,
-                                  authRepository: _authRepository,
-                                  onSubmit: (String userId, String phoneNumber) {
-                                    setState(() {
-                                      _userId = userId;
-                                      _phoneNumber = phoneNumber;
-                                      isNameScreen = true;
-                                      isOtpScreen = false;
-                                    });
+                                  onSubmit: (String userId, String phoneNumber,
+                                      String result) {
+                                    if (result == '200') {
+                                      setState(() {
+                                        _userId = userId;
+                                        _phoneNumber = phoneNumber;
+                                        isNameScreen = true;
+                                        isOtpScreen = false;
+                                      });
+                                    }
                                   },
                                 )
                               : PhoneInput(
-                                  onSubmit: (String userId, String phoneNumber) {
-                                    setState(() {
-                                      _userId = userId;
-                                      _phoneNumber = phoneNumber;
-                                      isOtpScreen = true;
-                                    });
+                                  onSubmit: (String userId, String phoneNumber,
+                                      String result) {
+                                    print('merieeeeeeeeeemm=' + result);
+                                    if (result == '200') {
+                                      setState(() {
+                                        _phoneNumber = phoneNumber;
+                                        _platform = getPlatform();
+                                        _ipadress = '255.255.255.255';
+                                        _userId = userId;
+                                        isOtpScreen =true; // Navigate to OTP screen
+                                      });
+                                    }
                                   },
+                                  //  (String userId, String phoneNumber) {
+                                  //   setState(() {
+                                  //     _userId = userId;
+                                  //     _phoneNumber = phoneNumber;
+                                  //     isOtpScreen = true;
+                                  //   });
+                                  // },
                                   authRepository: _authRepository,
                                 ),
                     ),
@@ -173,4 +206,3 @@ class _AuthenticationScreenState extends flutter.State<AuthenticationScreen> {
     );
   }
 }
-

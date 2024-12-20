@@ -11,7 +11,7 @@ import '../config/config.dart';
 class AuthService {
     String? ipAddress ;
     Future <String> sendSMS(String phoneNumber,String platform,String ipAdresseUser,String entry_id, Account account, Databases databases) async {
-    Client client = Client()
+    Client client = Client()    
         .setEndpoint(Config.appwriteEndpoint)
         .setProject(Config.appwriteProjectId)
         .setSelfSigned(status: true);
@@ -75,19 +75,19 @@ class AuthService {
         
         if (responseBody['status'] == '200') { // Changed from 200 to 'OK' to match potential string response
           return '200';
-        } else if (responseBody['status'] == '600') {
-          return '600';
+        } else if (responseBody['status'] == '400') {
+          return '400';
         } else if (responseBody['status'] == '333') {
           return '333';
         }
         else {
-                    return '500';
+                    return 'ERR';
         }
       } else {
-        return '500';
+        return 'ERR';
       }
     } catch (e) {
-      return '500';
+      return 'ERR';
     }
   }
 
@@ -128,12 +128,12 @@ class AuthService {
       if (result.status == 'completed') {
         final responseBody = json.decode(result.responseBody);
         print(responseBody);
-        if (responseBody['status'] == 400) {
+        if (responseBody['status'] == '400') {
             print('please provide all informations');
           return '400';
             // Handle successful 
         
-        } else if (responseBody['status'] == 200){ 
+        } else if (responseBody['status'] == '200'){ 
                     print('infos saved successfully');
 
           return '200';
@@ -153,5 +153,39 @@ class AuthService {
   }
 
 
+  Future <String> uploadUserSession(String phoneNumber,String entry_id, Account account, Databases databases) async {
+    Client client = Client()
+        .setEndpoint(Config.appwriteEndpoint)
+        .setProject(Config.appwriteProjectId)
+        .setSelfSigned(status: true);
+    Functions functions = Functions(client);
+    try {
+      Execution result = await functions.createExecution(
+        functionId: "sessionManagement",
+        body: json.encode({
+          "phoneNumber": phoneNumber,
+          "userID": entry_id ,
+        }),
+      );
+      if (result.status == 'completed') {
+        final responseBody = json.decode(result.responseBody);
+        if (responseBody['status'] == '200') {
+          return '200';
+          
+        } else if (responseBody['status'] == '400'){ 
+          return '400';
+        }else {
+          return 'ERR';
+        }
+      } else {
+        print('Function execution failed: ${result.status}' );
+      return '401';
+      }
+    } catch (e) {
+      // Handle error
+       print('Error : $e');
+            return '401';
+    }
+  }
   
 }

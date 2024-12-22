@@ -1,4 +1,5 @@
 import 'package:datalock/ui/screens/HomePage.dart';
+import 'package:datalock/ui/screens/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
@@ -88,11 +89,12 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => AuthenticationScreen(
-            account: widget.account,
-            databases: widget.databases,
-            functions: widget.functions,
-          ),
+          builder: (context) => OnboardingScreen(),
+          //  AuthenticationScreen(
+          //   account: widget.account,
+          //   databases: widget.databases,
+          //   functions: widget.functions,
+          // ),
         ),
       );
     }

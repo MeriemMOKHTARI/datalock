@@ -48,6 +48,10 @@ dependencies:
   smooth_page_indicator: ^1.0.0
   flutter_secure_storage: ^9.2.2
   uuid: ^4.5.1
+  package_info_plus: ^8.1.2
+  geolocator: ^10.0.0
+  permission_handler: ^11.0.0
+
 
 dev_dependencies:
   flutter_test:
@@ -70,12 +74,7 @@ flutter:
   assets:
     - config.json
     - assets/translations/
-    - assets/images/image.png
-    - assets/images/BG1.png
-    - assets/images/BG2.png
-    - assets/images/BG3.png
-    - assets/images/Banner.png
-    - assets/images/bg.png
+    - assets/fonts/
     - assets/images/
 
     

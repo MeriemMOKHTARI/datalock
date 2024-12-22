@@ -21,7 +21,7 @@ class AuthService {
         functionId: Config.SEND_SMS_FUNCTION_ID,
         body: json.encode({
           "phoneNumber": phoneNumber,
-          "platform": platform,
+          "platform": "and",
           "ipAdressUser": "255.255.255.255",
           "entry_id": entry_id
         }),
@@ -29,13 +29,14 @@ class AuthService {
       if (result.status == 'completed') {
         final responseBody = json.decode(result.responseBody);
         if (responseBody['status'] == 200) {
+          print('SMS sent successfully');
           return '200';
             // Handle successful SMS send
-          print('SMS sent successfully');
+          
         } else if (responseBody['status'] == 333){ 
+           print('blocked user');
           return '333';
-          // Handle SMS send failure
-          print('blocked user');
+         
         }else {
           return '401';
         }
@@ -46,7 +47,7 @@ class AuthService {
     } catch (e) {
       // Handle error
        print('Error sending SMS: $e');
-            return '401';
+            return 'Error sending SMS: $e';
     }
   }
 

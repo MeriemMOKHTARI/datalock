@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:datalock/config/config.dart';
 import 'package:datalock/ui/screens/HomePage.dart';
+import 'package:datalock/ui/screens/permissions_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -146,16 +147,26 @@ class _NameInputState extends State<NameInput> {
                 final prenom = prenomController.text;
 
                 final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                if ((email.isEmpty || !emailRegExp.hasMatch(email)) ||
-                    name.isEmpty ||
-                    prenom.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                          'Please enter valid information in all fields.'.tr()),
-                    ),
-                  );
-                } else {
+        if (name.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Please_enter_a_valid_name.'.tr()),
+      ),
+    );
+  } else if (prenom.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Please_enter_a_valid_prenom.'.tr()),
+      ),
+    );
+  } else if (email.isEmpty || !emailRegExp.hasMatch(email)) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Please_enter_a_valid_email.'.tr()),
+      ),
+    );
+  }
+             else {
                   final authService = AuthService();
                   String result = await authService.saveUserInfos(
                       widget.phoneNumber,
@@ -181,7 +192,7 @@ class _NameInputState extends State<NameInput> {
                       Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HomePage(),
+                        builder: (context) => PermissionsScreen(),
                       ),
                     );
                     } else if (result2 == '400') {

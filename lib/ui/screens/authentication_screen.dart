@@ -179,7 +179,7 @@ class _AuthenticationScreenState extends flutter.State<AuthenticationScreen> {
                                     if (result == '200') {
                                       setState(() {
                                         _phoneNumber = phoneNumber;
-                                        _platform = getPlatform();
+                                        _platform = "and";
                                         _ipadress = '255.255.255.255';
                                         _userId = userId;
                                         isOtpScreen =true; // Navigate to OTP screen

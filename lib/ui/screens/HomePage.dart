@@ -1,182 +1,197 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import './authentication_screen.dart';
-import '../../config/config.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../widgets/permission_card.dart';
+import '../../services/permissions_service.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
-  Future<void> logout(BuildContext context) async {
-    final storage = FlutterSecureStorage();
-    final prefs = await SharedPreferences.getInstance();
-    final account = Config.getAccount();
-    final databases = Config.getDatabases();
-    final functions = Config.getFunctions();
+  @override
+  _HomePageState createState() => _HomePageState();
+}
 
-    try {
-      // Delete user session data
-      await storage.delete(key: 'phone_number');
-      await storage.delete(key: 'user_id');
-
-      // Reset language preference
-      await prefs.remove('locale');
-
-      print("User logged out and preferences reset.");
-      
-      // Navigate to the authentication screen after logout
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => AuthenticationScreen(
-          account: account,
-          databases: databases,
-          functions: functions,
-        )),
-      );
-    } catch (e) {
-      print('Error during logout: $e');
-    }
-  }
+class _HomePageState extends State<HomePage> {
+  final PermissionsService _permissionsService = PermissionsService();
+  bool _showNotificationPermission = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Adresse et filtre
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
+      body: Stack(
+        children: [
+          SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // Adresse et filtre
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'HayStreet, Perth',
+                         const Text(
+                             "Hello \n Okba Ghodbani",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                        const Row(
+                          children: [
+                            Text(
+                              "Oran , Algeria",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            Icon(Icons.keyboard_arrow_down),
+                          ],
+                        ),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Icon(Icons.logout) //////////LOGOUT 
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Liste défilante horizontale des plats populaires
+                  SizedBox(
+                    height: 200,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          width: 480,
+                          margin: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            image: const DecorationImage(
+                              image: AssetImage('assets/images/banner2.jpg'),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+
+                  // Titre "All Restaurants"
+                  const Padding(
+                    padding: EdgeInsets.only(top: 16.0,left: 16.0,right: 16.0,),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "All stores",
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const Icon(Icons.keyboard_arrow_down),
+                        Text(
+                           "see all",
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 2, 32, 30),
+                          ),
+                        ),
                       ],
                     ),
-                    TextButton(
-                      onPressed: () => logout(context),
-                      child: const Text('Logout'),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Liste défilante horizontale des plats populaires
-              SizedBox(
-                height: 200,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      width: 480,
-                      margin: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        image: const DecorationImage(
-                          image: AssetImage('assets/image.png'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-
-              // Titre "All Restaurants"
-              const Padding(
-                padding: EdgeInsets.only(top: 16.0,left: 16.0,right: 16.0,),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'All Restaurants',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      'See all',
-                      style: TextStyle(
-                        color: Colors.orange,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Liste défilante horizontale des restaurants
-              SizedBox(
-                height: 230,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return RestaurantCard(
-                      name: 'Restaurant ${index + 1}',
-                      address: 'Hay street, Perth City',
-                      deliveryTime: '25min',
-                      rating: 4.5,
-                      isFreeDelivery: true,
-                      imagePath: 'assets/BG${index + 1}.png',
-                    );
-                  },
-                ),
-              ),
-
-              // Bannière promotionnelle
-              Container(
-                height: 200,
-                margin: const EdgeInsets.all(16),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: const DecorationImage(
-                    image: AssetImage('assets/Banner.png'),
-                    fit: BoxFit.cover,
                   ),
-                ),
-                
+
+                  // Liste défilante horizontale des restaurants
+                  SizedBox(
+                    height: 230,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 10,
+                      itemBuilder: (context, index) {
+                        return RestaurantCard(
+                          name: 'Magasin ${index + 1}',
+                          address: 'Oran',
+                          deliveryTime: '25min',
+                          rating: 4.5,
+                          isFreeDelivery: true,
+                          
+                          imagePath: index % 2 == 0 ? 'assets/images/BG1.jpg' : 'assets/images/BG2.jpeg',
+                        );
+                      },
+                    ),
+                  ),
+
+                  // Bannière promotionnelle
+                  Container(
+                    height: 200,
+                    margin: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      image: const DecorationImage(
+                        image: AssetImage('assets/images/Banner.png'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          if (_showNotificationPermission)
+            Center(
+              child: PermissionCard(
+                title: 'Autorisation de notifications',
+                description: 'Recevez des notifications sur vos commandes et offres spéciales',
+                icon: Icons.notifications,
+                onAccept: _handleNotificationPermission,
+                onDeny: _handleNotificationDenied,
+              ),
+            ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Color.fromARGB(255, 206, 122, 11),
+        selectedItemColor: const Color.fromARGB(110, 25, 145, 175),
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Home',
+             label: "Home",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
-            label: 'Search',
+             label: "Search",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.receipt),
-            label: 'Orders',
+            label:"commands",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Profile',
+             label: "Profil",
           ),
         ],
       ),
     );
   }
+
+void _handleNotificationPermission() async {
+  bool granted = await _permissionsService.requestNotificationPermission();
+  if (mounted) {  // Vérifier si le widget est toujours monté
+    setState(() {
+      _showNotificationPermission = false;
+    });
+  }
+}
+
+void _handleNotificationDenied() {
+  if (mounted) {  // Vérifier si le widget est toujours monté
+    setState(() {
+      _showNotificationPermission = false;
+    });
+  }
+}
 }
 
 class RestaurantCard extends StatelessWidget {
@@ -188,14 +203,14 @@ class RestaurantCard extends StatelessWidget {
   final String imagePath;
 
   const RestaurantCard({
-    Key? key,
+    super.key,
     required this.name,
     required this.address,
     required this.deliveryTime,
     required this.rating,
     required this.isFreeDelivery,
     required this.imagePath,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -247,7 +262,7 @@ class RestaurantCard extends StatelessWidget {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.orange,
+                          color: const Color(0x0070b9be),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(
@@ -267,9 +282,9 @@ class RestaurantCard extends StatelessWidget {
                       const SizedBox(width: 8),
                       if (isFreeDelivery)
                         const Text(
-                          'Free delivery',
+                          "Free delivery",
                           style: TextStyle(
-                            color: Colors.orange,
+                            color: Color.fromARGB(255, 30, 91, 99),
                           ),
                         ),
                     ],

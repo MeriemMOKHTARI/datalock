@@ -116,7 +116,7 @@ class _OtpInputState extends State<OtpInput> {
     if (result == '200') {
       print('SMS resent successfully');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('OTP resent successfully')),
+        SnackBar(content: Text('OTP_resent_successfully'.tr())),
       );
       startCountdown();
     } else {
@@ -126,7 +126,7 @@ class _OtpInputState extends State<OtpInput> {
         builder: (context) {
           return AlertDialog(
             title: Text('Error'),
-            content: Text('Failed to resend OTP. Please try again later.'),
+            content: Text('Please_try_again_later.'.tr()),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
@@ -190,15 +190,15 @@ class _OtpInputState extends State<OtpInput> {
                   await widget.onSubmit(widget.userId, widget.phoneNumber,result);
                 } else if (result == '400') {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('please provide a valid OTP')),
+                    SnackBar(content: Text('please_provide_a_valid_OTP'.tr())),
                   );
                 } else if (result == '333') {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('incorrect OTP')),
+                    SnackBar(content: Text('incorrect_OTP'.tr())),
                   );
                 } else if (result == 'ERR') {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error')),
+                    SnackBar(content: Text('Please_try_again_later.'.tr())),
                   );
                 } else {  
                  

@@ -4,6 +4,7 @@ import '../../services/permissions_service.dart';
 import './city_selection_screen.dart';
 import './HomePage.dart';
 import '../../config/config.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class PermissionsScreen extends StatefulWidget {
   const PermissionsScreen({super.key});
@@ -26,15 +27,22 @@ class _PermissionsScreenState extends State<PermissionsScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Bienvenue !',
+                'Bienvenue!'.tr(),
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   color: Config.themeData.primaryColor,
                   fontWeight: FontWeight.bold,
+                  shadows: [
+      Shadow(
+        color: Colors.black26,
+        offset: Offset(2, 2),
+        blurRadius: 3,
+      ),
+    ],
                 ),
               ),
               const SizedBox(height: 16),
               Text(
-                'Pour une meilleure expérience, nous avons besoin de votre autorisation.',
+                'Pour_une_meilleure_experience,_nous_avons_besoin_de_votre_autorisation.'.tr(),
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Config.themeData.scaffoldBackgroundColor,
                 ),
@@ -51,9 +59,9 @@ class _PermissionsScreenState extends State<PermissionsScreen> {
 
   Widget _buildLocationPermission() {
     return PermissionCard(
-      title: 'Autorisation de géolocalisation',
+      title: 'Partager_votre_localisation'.tr(),
       description:
-          'Nous avons besoin de votre localisation pour vous montrer les restaurants à proximité',
+          'L_application_utilisera_votre_localisation_pour_trouver_des_établissements_près_de_vous,_et_vous_livrer_avec_prévision_à_votre_adresse.'.tr(),
       icon: Icons.location_on,
       onAccept: _handleLocationPermission,
       onDeny: _handleLocationDenied,

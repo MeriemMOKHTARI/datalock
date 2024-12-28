@@ -15,11 +15,15 @@ import '../widgets/custom_button.dart';
 import '../../services/auth_service.dart';
 
 class PhoneInput extends flutter.StatefulWidget {
-  final Function(String userId, String phoneNumber, String result) onSubmit;
+  final Function(String userId, String phoneNumber, String result, String entry_id) onSubmit;
+    final VoidCallback onLoginTap;
+
 
   const PhoneInput({
     flutter.Key? key,
     required this.onSubmit,
+        required this.onLoginTap,
+
     required AuthRepository authRepository,
   }) : super(key: key);
 
@@ -35,7 +39,7 @@ class _PhoneInputState extends flutter.State<PhoneInput> {
   String? ipAddress;
   bool isOtpScreen = false;
 
-  String entry_id = ID.unique();
+   String entry_id = ID.unique();
   final account = Config.getAccount();
   final databases = Config.getDatabases();
   String lastValidNumber = '';
@@ -115,6 +119,7 @@ class _PhoneInputState extends flutter.State<PhoneInput> {
 
     void _sendSMS() async {
     final authService = AuthService();
+
     String result = await authService.sendSMS(
       completePhoneNumber!,
       "and",
@@ -127,7 +132,7 @@ class _PhoneInputState extends flutter.State<PhoneInput> {
     print(completePhoneNumber! + "android" + "255.255.255.255" + entry_id);
     if (result == '200') {
       print('SMS sent successfully, navigating to OTP screen...');
-      widget.onSubmit(entry_id, completePhoneNumber!, result);
+      widget.onSubmit(entry_id, completePhoneNumber!, result, entry_id);
     } else if (result == '333') {
       print('User is blocked');
       showDialog(
@@ -276,6 +281,32 @@ class _PhoneInputState extends flutter.State<PhoneInput> {
             CustomButton(
               onPressed: isPhoneValid ? _showConfirmationDialog : null,
               text: 'login'.tr(),
+            ),
+
+                 flutter.SizedBox(height: 16),
+            flutter.Center(
+              child: flutter.GestureDetector(
+          onTap: widget.onLoginTap,
+  child: flutter.RichText(
+    text: flutter.TextSpan(
+      style: flutter.TextStyle(
+        color: flutter.Colors.grey[600],
+        fontSize: 14,
+      ),
+      children: [
+        flutter.TextSpan(text: 'Déja inscrit ? '),
+        flutter.TextSpan(
+          text: 'connectez-vous',
+          style: flutter.TextStyle(
+            decoration: flutter.TextDecoration.underline,
+            color: flutter.Theme.of(context).primaryColor,
+          ),
+        ),
+      ],
+    ),
+  ),
+),
+             
             ),
           ],
         ),

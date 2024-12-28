@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/custom_button.dart';
 import './HomePage.dart';
 import '../../config/config.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class CitySelectionScreen extends StatefulWidget {
   const CitySelectionScreen({super.key});
@@ -12,16 +13,23 @@ class CitySelectionScreen extends StatefulWidget {
 
 class _CitySelectionScreenState extends State<CitySelectionScreen> {
   String? _selectedCity;
-  final List<String> _algerianCities = [
-    'Alger', 'Oran', 'Constantine', 'Annaba', 'Blida', 'Batna', 'Djelfa', 'Sétif', 'Sidi Bel Abbès', 'Biskra'
-  ]; // Add more cities as needed
+ final List<String> _algerianCities = [
+  'Adrar', 'Aïn Defla', 'Aïn Témouchent', 'Alger', 'Annaba', 'Batna', 'Béchar', 
+  'Béjaïa', 'Biskra', 'Blida', 'Bordj Bou Arreridj', 'Bouira', 'Boumerdès', 'Chlef',
+  'Constantine', 'Djelfa', 'El Bayadh', 'El Oued', 'El Tarf', 'Ghardaïa', 
+  'Guelma', 'Illizi', 'Jijel', 'Khenchela', 'Laghouat', 'Mascara', 'Médéa', 
+  'Mila', 'Mostaganem', 'Msila', 'Naâma', 'Oran', 'Ouargla', 'Oum El Bouaghi',
+  'Relizane', 'Saïda', 'Sétif', 'Sidi Bel Abbès', 'Skikda', 'Souk Ahras', 
+  'Tamanghasset', 'Tébessa', 'Tiaret', 'Tindouf', 'Tipaza', 'Tissemsilt', 
+  'Tizi Ouzou', 'Tlemcen'
+];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Sélectionnez votre ville'),
+        title:  Text('select_your_city'.tr()),
         backgroundColor: Config.themeData.primaryColor,
       ),
       body: SafeArea(
@@ -31,7 +39,7 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Veuillez sélectionner votre ville',
+                'Veuillez_sélectionner_votre_ville'.tr(),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Config.themeData.scaffoldBackgroundColor,
                 ),
@@ -39,7 +47,7 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
               const SizedBox(height: 20),
               DropdownButton<String>(
                 value: _selectedCity,
-                hint: const Text('Choisissez une ville'),
+                hint:  Text('choose_a_city'.tr()),
                 isExpanded: true,
                 items: _algerianCities.map((String city) {
                   return DropdownMenuItem<String>(
@@ -51,12 +59,15 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
                   setState(() {
                     _selectedCity = newValue;
                   });
+                  if (newValue != null && newValue != 'Oran') {
+                    _showCityAlert();
+                  }
                 },
               ),
               const SizedBox(height: 20),
               CustomButton(
                 onPressed: _selectedCity != null ? _handleCityConfirmation : null,
-                text: 'Confirmer la ville',
+                text: 'confirm_city'.tr(),
               ),
             ],
           ),
@@ -65,10 +76,37 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
     );
   }
 
-  void _handleCityConfirmation() {
+  void _showCityAlert() {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('service_unavailable'.tr()),
+        content: Text('service_only_in_oran'.tr()),
+        actions: <Widget>[
+          TextButton(
+            child:  Text('OK'.tr()),
+            onPressed: () {
+              Navigator.of(context).pop();
+              setState(() {
+                // Reset the selected city to Oran after the alert
+                _selectedCity = 'Oran'; 
+              });
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void _handleCityConfirmation() {
+  if (_selectedCity == 'Oran') {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const HomePage()),
     );
+  } else {
+    _showCityAlert();
   }
 }
-
+}

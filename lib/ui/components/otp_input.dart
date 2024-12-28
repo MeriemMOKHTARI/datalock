@@ -12,11 +12,14 @@ import '../widgets/custom_button.dart';
 import '../../services/auth_service.dart';
 
 class OtpInput extends StatefulWidget {
-  final Function(String userId, String phoneNumber, String result) onSubmit;
+  final Function(String userId, String phoneNumber, String result, String? name, String? prenom) onSubmit;
   final VoidCallback onBack;
   final Function(String otp) onVerify;
   final String phoneNumber;
   final String userId;
+  final String? name;
+  final String? prenom;
+  final String entry_id;
 
   const OtpInput({
     Key? key,
@@ -25,6 +28,9 @@ class OtpInput extends StatefulWidget {
     required this.phoneNumber,
     required this.userId,
     required this.onSubmit,
+    required this.entry_id,
+    this.name,
+    this.prenom,
   }) : super(key: key);
 
   @override
@@ -36,7 +42,6 @@ class _OtpInputState extends State<OtpInput> {
       List.generate(4, (index) => TextEditingController());
   String remainingTime = '';
   String? ipAddress;
-  String entry_id = ID.unique();
   final account = Config.getAccount();
   final databases = Config.getDatabases();
  
@@ -108,7 +113,7 @@ class _OtpInputState extends State<OtpInput> {
       widget.phoneNumber,
       getPlatform(),
       ipAddress ?? "255.255.255.255",
-      entry_id,
+      widget.entry_id,
       account,
       databases,
     );
@@ -178,16 +183,20 @@ class _OtpInputState extends State<OtpInput> {
             SizedBox(height: 24),
             CustomButton(
               onPressed: () async {
-                // Bypass OTP verification
                 final authService = AuthService();
                 String result = await authService.VerifyOTP(
                   widget.phoneNumber,
                   otpControllers.map((controller) => controller.text).join(''),
+                  widget.entry_id,
                   account,
                   databases,
                 );
+                print(widget.phoneNumber +
+                    otpControllers.map((controller) => controller.text).join('') +
+                    widget.entry_id +
+                    result);
                 if (result == '200') {
-                  await widget.onSubmit(widget.userId, widget.phoneNumber,result);
+                  await widget.onSubmit(widget.userId, widget.phoneNumber, result, widget.name, widget.prenom);
                 } else if (result == '400') {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('please_provide_a_valid_OTP'.tr())),
@@ -200,8 +209,6 @@ class _OtpInputState extends State<OtpInput> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Please_try_again_later.'.tr())),
                   );
-                } else {  
-                 
                 }
               },
               text: 'Continue'.tr(),
@@ -249,3 +256,4 @@ class _OtpInputState extends State<OtpInput> {
     );
   }
 }
+

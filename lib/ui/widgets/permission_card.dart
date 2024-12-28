@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../config/config.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class PermissionCard extends StatelessWidget {
   final String title;
@@ -56,7 +57,7 @@ class PermissionCard extends StatelessWidget {
                 children: [
                   TextButton(
                     onPressed: onDeny,
-                    child: const Text('Non',
+                    child:  Text('Non'.tr(),
                         style: TextStyle(color: Colors.black87)), // Update: Changed button text color to black87
                   ),
                   ElevatedButton(
@@ -68,7 +69,7 @@ class PermissionCard extends StatelessWidget {
                       ),
                       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                     ),
-                    child: const Text('Oui',
+                    child:  Text('Oui'.tr(),
                         style: TextStyle(color: Colors.white, fontSize: 16)),
                   ),
                 ],

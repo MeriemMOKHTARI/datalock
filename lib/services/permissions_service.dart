@@ -1,11 +1,24 @@
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PermissionsService {
   Future<bool> requestNotificationPermission() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool alreadyRequested = prefs.getBool('notification_permission_requested') ?? false;
+
+    if (alreadyRequested) {
+      // Si déjà demandé, ne pas redemander
+      return await checkNotificationPermission();
+    }
+
+    // Sinon, demander l'autorisation
     PermissionStatus status = await Permission.notification.request();
-    // Attendre un court instant pour permettre au système de traiter la demande
     await Future.delayed(const Duration(milliseconds: 500));
+
+    // Stocker que la permission a été demandée
+    prefs.setBool('notification_permission_requested', true);
+
     return status.isGranted;
   }
 
@@ -31,7 +44,6 @@ class PermissionsService {
         return false;
       }
 
-      // Attendre un court instant pour permettre au système de traiter la demande
       await Future.delayed(const Duration(milliseconds: 500));
       return true;
     } catch (e) {

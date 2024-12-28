@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/permission_card.dart';
 import '../../services/permissions_service.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -29,17 +30,17 @@ class _HomePageState extends State<HomePage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                         const Text(
-                             "Hello \n Okba Ghodbani",
+                          Text(
+                             "Hello".tr(),
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                        const Row(
+                         Row(
                           children: [
                             Text(
-                              "Oran , Algeria",
+                              "Oran_,_Algeria".tr(),
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.normal,
@@ -79,20 +80,20 @@ class _HomePageState extends State<HomePage> {
                   ),
 
                   // Titre "All Restaurants"
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.only(top: 16.0,left: 16.0,right: 16.0,),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "All stores",
+                          "All_stores".tr(),
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                           "see all",
+                           "see_all".tr(),
                           style: TextStyle(
                             color: Color.fromARGB(255, 2, 32, 30),
                           ),
@@ -110,12 +111,12 @@ class _HomePageState extends State<HomePage> {
                       itemBuilder: (context, index) {
                         return RestaurantCard(
                           name: 'Magasin ${index + 1}',
-                          address: 'Oran',
-                          deliveryTime: '25min',
+                          address: 'Oran'.tr(),
+                          deliveryTime: '25min'.tr(),
                           rating: 4.5,
                           isFreeDelivery: true,
                           
-                          imagePath: index % 2 == 0 ? 'assets/images/BG1.jpg' : 'assets/images/BG2.jpeg',
+                          imagePath: index % 2 == 0 ? 'assets/images/BG1.jpg' : 'assets/images/BG2.jpg',
                         );
                       },
                     ),
@@ -142,8 +143,8 @@ class _HomePageState extends State<HomePage> {
           if (_showNotificationPermission)
             Center(
               child: PermissionCard(
-                title: 'Autorisation de notifications',
-                description: 'Recevez des notifications sur vos commandes et offres spéciales',
+                title: 'Autorisation_de_notifications'.tr(),
+                description: 'Recevez_des_notifications_sur_vos_commandes_et_offres_spéciales'.tr(),
                 icon: Icons.notifications,
                 onAccept: _handleNotificationPermission,
                 onDeny: _handleNotificationDenied,
@@ -154,22 +155,22 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: const Color.fromARGB(110, 25, 145, 175),
         type: BottomNavigationBarType.fixed,
-        items: const [
+        items:  [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-             label: "Home",
+             label: "Home".tr(),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
-             label: "Search",
+             label: "Search".tr(),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.receipt),
-            label:"commands",
+            label:"Orders".tr(),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-             label: "Profil",
+             label: "Profile".tr(),
           ),
         ],
       ),
@@ -178,15 +179,19 @@ class _HomePageState extends State<HomePage> {
 
 void _handleNotificationPermission() async {
   bool granted = await _permissionsService.requestNotificationPermission();
-  if (mounted) {  // Vérifier si le widget est toujours monté
+  if (mounted) {
     setState(() {
       _showNotificationPermission = false;
     });
   }
+
+  if (!granted) {
+    _handleNotificationDenied();
+  }
 }
 
 void _handleNotificationDenied() {
-  if (mounted) {  // Vérifier si le widget est toujours monté
+  if (mounted) {
     setState(() {
       _showNotificationPermission = false;
     });
@@ -280,13 +285,7 @@ class RestaurantCard extends StatelessWidget {
                       const SizedBox(width: 8),
                       Text(deliveryTime),
                       const SizedBox(width: 8),
-                      if (isFreeDelivery)
-                        const Text(
-                          "Free delivery",
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 30, 91, 99),
-                          ),
-                        ),
+                      
                     ],
                   ),
                 ],

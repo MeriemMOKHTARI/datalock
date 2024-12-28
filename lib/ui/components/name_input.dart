@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:datalock/config/config.dart';
-import 'package:datalock/ui/screens/HomePage.dart';
 import 'package:datalock/ui/screens/permissions_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
@@ -19,6 +18,9 @@ class NameInput extends StatefulWidget {
   final String userId;
   final String phoneNumber;
   final AuthRepository authRepository;
+  final String? name;
+  final String? prenom;
+  final String entry_id;
 
   const NameInput({
     Key? key,
@@ -27,6 +29,9 @@ class NameInput extends StatefulWidget {
     required this.userId,
     required this.phoneNumber,
     required this.authRepository,
+    required this.entry_id,
+    this.name,
+    this.prenom,
   }) : super(key: key);
 
   @override
@@ -54,13 +59,22 @@ class _NameInputState extends State<NameInput> {
     }
   }
 
-  Future<void> saveUserSession(String phoneNumber, String userId) async {
+  Future<void> saveUserSession(String phoneNumber, String userId, String sessionId) async {
     try {
       await storage.write(key: 'phone_number', value: phoneNumber);
       await storage.write(key: 'user_id', value: userId);
+      await storage.write(key: 'session_id', value: sessionId);
+
     } catch (e) {
       print('Error saving user session: $e');
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.text = widget.name ?? '';
+    prenomController.text = widget.prenom ?? '';
   }
 
   @override
@@ -147,61 +161,66 @@ class _NameInputState extends State<NameInput> {
                 final prenom = prenomController.text;
 
                 final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-        if (name.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Please_enter_a_valid_name.'.tr()),
-      ),
-    );
-  } else if (prenom.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Please_enter_a_valid_prenom.'.tr()),
-      ),
-    );
-  } else if (email.isEmpty || !emailRegExp.hasMatch(email)) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Please_enter_a_valid_email.'.tr()),
-      ),
-    );
-  }
-             else {
+                if (name.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Please_enter_a_valid_name'.tr()),
+                    ),
+                  );
+                } else if (prenom.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Please_enter_a_valid_prenom'.tr()),
+                    ),
+                  );
+                } else if (email.isEmpty || !emailRegExp.hasMatch(email)) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Please_enter_a_valid_email'.tr()),
+                    ),
+                  );
+                } else {
                   final authService = AuthService();
+                  print("avant man3yto les parametres li dthom save user infos " + widget.phoneNumber + "and" + "255.255.255.255" + name + prenom + email + widget.entry_id);
                   String result = await authService.saveUserInfos(
                       widget.phoneNumber,
                       getPlatform(),
                       "255.255.255.255",
-                      widget.userId,
+                      widget.entry_id,
                       name,
                       prenom,
                       email,
                       account,
                       databases);
-
+                  print("apres ma3aytna les parametres li dthom save user infos " + widget.phoneNumber + "and" + "255.255.255.255" + name + prenom + email + widget.entry_id);
+print("resultat tae save user infos" + result);
                   // Handle the result
                   if (result == '400') {
-                    print('please provide all informations');
+                    print('please provide all informations hedi f save user infos');
                   } else if (result == '200') {
                     print('infos saved successfully');
-                    await saveUserSession(widget.phoneNumber, widget.userId);
-                    String result2 = await authService.uploadUserSession(
+                    Map<String, String> result2 = await authService.uploadUserSession(
                         widget.phoneNumber, widget.userId, account, databases);
-                    if (result2 == '200') {
+                        print("after call upload user session result2=");
+                        print(result2);
+                        print("parametre li raha tdihom " + widget.phoneNumber + "id litadih="+ widget.userId);
+                    if (result2['status'] == '200') {
+                      String sessionId = result2['session_id'] ?? '';
+                        await saveUserSession(widget.phoneNumber, widget.userId, sessionId);
                       print('session saved successfully');
                       Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PermissionsScreen(),
-                      ),
-                    );
-                    } else if (result2 == '400') {
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PermissionsScreen(),
+                        ),
+                      );
+                    } else if (result2['status'] == '400') {
                       print('please provide all informations');
                     } else {
                       print('session not saved');
                     }
-                    
-                  } 
+
+                  }
                   handleNameSubmit(name, prenom, email);
                 }
               },
@@ -213,3 +232,4 @@ class _NameInputState extends State<NameInput> {
     );
   }
 }
+

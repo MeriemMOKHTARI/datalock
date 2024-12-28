@@ -7,6 +7,7 @@ import 'package:datalock/ui/components/otp_input.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' as flutter;
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -36,6 +37,7 @@ class _PhoneInputState extends flutter.State<PhoneInput> {
   bool isPhoneValid = false;
   bool showError = false;
   String? completePhoneNumber;
+  final FlutterSecureStorage storage = FlutterSecureStorage();
   String? ipAddress;
   bool isOtpScreen = false;
 
@@ -120,6 +122,7 @@ class _PhoneInputState extends flutter.State<PhoneInput> {
     void _sendSMS() async {
     final authService = AuthService();
 
+    await storage.write(key: 'new_user_id', value: entry_id);
     String result = await authService.sendSMS(
       completePhoneNumber!,
       "and",

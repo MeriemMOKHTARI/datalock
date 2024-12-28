@@ -44,7 +44,6 @@ class _OtpInputState extends State<OtpInput> {
   String? ipAddress;
   final account = Config.getAccount();
   final databases = Config.getDatabases();
- 
 
   String getPlatform() {
     if (kIsWeb) {

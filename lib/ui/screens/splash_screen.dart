@@ -33,7 +33,6 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<bool> checkUserSession() async {
     final phoneNumber = await storage.read(key: 'phone_number');
     final userId = await storage.read(key: 'user_id');
-
     if (phoneNumber != null && userId != null) {
       print('User is logged in with Phone Number: $phoneNumber, User ID: $userId');
       return true;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/permission_card.dart';
 import '../../services/permissions_service.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

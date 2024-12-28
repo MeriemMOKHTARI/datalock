@@ -154,31 +154,48 @@ class _PhoneInputState extends flutter.State<PhoneInput> {
   }
 
   void _showConfirmationDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Number_Verification'.tr()),
-          content: Text('Do_you_confirm_that_your_number_is_well_there'.tr() + ': $completePhoneNumber?'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('No'.tr()),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Yes'.tr()),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _sendSMS();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+    // Séparer le numéro en parties
+    final String number = completePhoneNumber ?? '';
+    final String questionMark = '?';
+    final String plus = '+';
+showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      // Condition pour formater le message
+      final String contentMessage = context.locale.languageCode == 'ar'
+          ? 'Do_you_confirm_that_your_number_is_well_there'.tr() +
+              ': ' +
+              questionMark +
+              number.substring(1) +
+              plus
+          : 'Do_you_confirm_that_your_number_is_well_there'.tr() +
+              ': ' +
+              plus +
+              number.substring(1) +
+              questionMark;
+
+      return AlertDialog(
+        title: Text('Number_Verification'.tr()),
+        content: Text(contentMessage),
+        actions: <Widget>[
+          TextButton(
+            child: Text('No'.tr()),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: Text('Yes'.tr()),
+            onPressed: () {
+              Navigator.of(context).pop();
+              _sendSMS();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 
 
 
@@ -326,4 +343,3 @@ class PhoneNumber {
     required this.isoCode,
   });
 }
-

@@ -58,7 +58,7 @@
      "En_vous_connectant_vous_acceptez_les":"By connecting, you accept the ",
      "conditions_générales_d_utilisations":"terms and conditions of use",
      "et_la":" and ",
-     "politique_de_confidentialité":"privacy policy",
+     "politique de confidentialité":"privacy policy",
      "Les_restaurants_partenaires_sont_responsables_de_la_qualité_et_de_la_disponibilité_des_produits_commandés.":"Partners restaurants are responsible for the quality and availability of ordered products.",
      "3_Livraison": "3. Delivery",
     "La_livraison_est_assurée_uniquement_dans_les_zones_couvertes_par_notre_service.": "Delivery is only available in areas covered by our service.",
@@ -163,7 +163,7 @@
   "Veuillez_sélectionner_votre_ville":"Please select your city",
   "OK":"OK",
   "Vérification_des_coordonnées":"Verification of coordinates",
-  "Votre_nom_et_prénom_ne_correspondent_pas_avec_votre_N°_de_téléphone,_continuez_quand_même_? ":"Your name and first name do not match with your phone number, continue anyway ?",
+  "Votre_nom_et_prénom_ne_correspondent_pas_avec_votre_N°_de_téléphone_,_continuez_quand_même_? ":"Your name and first name do not match with your phone number, continue anyway ?",
   "Failed_to_send_SMS._Please_try_again.":"Failed to send SMS. Please try again.",
   "An_error_occurred._Please_try_again.":"An error occurred. Please try again."
 

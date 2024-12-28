@@ -90,7 +90,7 @@ class _LoginInputState extends State<LoginInput> {
         return AlertDialog(
           title: Text('Vérification_des_coordonnées'.tr()),
           content: Text(
-              'Votre_nom_et_prénom_ne_correspondent_pas_avec_votre_N°_de_téléphone,_continuez_quand_même_?'.tr()),
+              'Votre_nom_et_prénom_ne_correspondent_pas_avec_votre_N°_de_téléphone_,_continuez_quand_même_?'.tr()),
           actions: <Widget>[
             TextButton(
               child: Text('Non'.tr()),

@@ -73,7 +73,7 @@
     "En_vous_connectant_vous_acceptez_les":"En vous connectant, vous acceptez les ",
     "conditions_générales_d_utilisations":"Conditions générales d'utilisation",
     "et_la":" et la ",
-    "politique_de_confidentialité":"politique de confidentialité",
+    "politique de confidentialité":"politique de confidentialité",
     "1_Données_Collectées": "1. Données Collectées",
     "Données_Collectées_Contenu": "- Informations personnelles : nom, prénom, numéro de téléphone, adresse e-mail, adresse de livraison.\n- Données liées à l'utilisation : historique des commandes, préférences alimentaires, localisation.",
     "2_Utilisation_des_Données": "2. Utilisation des Données",
@@ -165,7 +165,7 @@
   "Veuillez_sélectionner_votre_ville":"Veuillez sélectionner votre ville",
   "OK":"OK",
   "Vérification_des_coordonnées":"Vérification des coordonnées",
-  "Votre_nom_et_prrenom_ne_correspondent_pas_avec_votre_N°_de_telephone,_continuez_quand_meme_? ":"Votre nom et prrenom ne correspondent pas avec votre N° de telephone, continuez quand meme ?",
+  "Votre_nom_et_prrenom_ne_correspondent_pas_avec_votre_N°_de_telephone_,_continuez_quand_meme_? ":"Votre nom et prrenom ne correspondent pas avec votre N° de telephone, continuez quand meme ?",
   "Failed_to_send_SMS._Please_try_again.":"Failed to send SMS. Please try again.",
   "An_error_occurred._Please_try_again.":"An error occurred. Please try again."
 

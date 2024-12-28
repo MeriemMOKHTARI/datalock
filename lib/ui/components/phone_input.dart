@@ -103,7 +103,7 @@ class _PhoneInputState extends flutter.State<PhoneInput> {
           content: Text('The_application_is_currently_only_available_in_Algeria.'.tr()),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
+              child: Text('OK'.tr()),
               onPressed: () {
                 Navigator.of(context).pop();
                 setState(() {

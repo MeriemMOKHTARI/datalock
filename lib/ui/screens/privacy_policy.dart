@@ -7,7 +7,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Politique_de_Confidentialité'.tr()),
+        title: Text('Politique de Confidentialité'.tr()),
       ),
       body: Container(
         color: Colors.white, // Arrière-plan blanc

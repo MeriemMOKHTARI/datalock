@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:datalock/config/config.dart';
@@ -41,6 +42,8 @@ class _OtpInputState extends State<OtpInput> {
   final List<TextEditingController> otpControllers =
       List.generate(4, (index) => TextEditingController());
   String remainingTime = '';
+    final List<FocusNode> focusNodes = List.generate(4, (index) => FocusNode());
+
   String? ipAddress;
   final account = Config.getAccount();
   final databases = Config.getDatabases();
@@ -62,6 +65,25 @@ class _OtpInputState extends State<OtpInput> {
     super.initState();
     fetchAndSetIpAddress();
     startCountdown();
+  }
+
+  @override
+  void dispose() {
+    // Nettoyer les controllers et focus nodes
+    for (var controller in otpControllers) {
+      controller.dispose();
+    }
+    for (var node in focusNodes) {
+      node.dispose();
+    }
+    super.dispose();
+  }
+
+  void _handleControllerChange(int index) {
+    final String text = otpControllers[index].text;
+    if (text.length == 1 && index < otpControllers.length - 1) {
+      focusNodes[index + 1].requestFocus();
+    }
   }
 
   Future<void> fetchAndSetIpAddress() async {
@@ -178,7 +200,59 @@ class _OtpInputState extends State<OtpInput> {
               ),
             ),
             SizedBox(height: 16),
-            OtpField(controllers: otpControllers),
+             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                otpControllers.length,
+                (index) => Container(
+                  width: 60,
+                  height: 60,
+                  margin: EdgeInsets.symmetric(horizontal: 4),
+                  child:KeyboardListener(
+  focusNode: FocusNode(), // Pour intercepter les événements clavier
+  onKeyEvent: (KeyEvent event) {
+    if (event is KeyDownEvent &&
+        event.logicalKey == LogicalKeyboardKey.backspace) {
+      if (index > 0) {
+        // Effacer le contenu de la case actuelle
+        otpControllers[index].clear();
+        // Reculer immédiatement au champ précédent
+        focusNodes[index - 1].requestFocus();
+      }
+    }
+  },
+  child: TextField(
+    controller: otpControllers[index],
+    focusNode: focusNodes[index],
+    keyboardType: TextInputType.number,
+    textAlign: TextAlign.center,
+    maxLength: 1,
+    decoration: InputDecoration(
+      counterText: "",
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+    ),
+    inputFormatters: [
+      FilteringTextInputFormatter.digitsOnly,
+      LengthLimitingTextInputFormatter(1),
+    ],
+    onChanged: (value) {
+      if (value.length == 1 && index < otpControllers.length - 1) {
+        // Avancer automatiquement au champ suivant
+        focusNodes[index + 1].requestFocus();
+      }
+    },
+    onTap: () {
+      otpControllers[index].selection = TextSelection.fromPosition(
+        TextPosition(offset: otpControllers[index].text.length),
+      );
+    },
+  ),
+),
+              ),
+            ),
+          ),
             SizedBox(height: 24),
             CustomButton(
               onPressed: () async {

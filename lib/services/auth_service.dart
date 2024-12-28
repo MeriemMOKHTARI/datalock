@@ -198,7 +198,7 @@ class AuthService {
         if (responseBody['status'] == '200') {
           return {
             'status': '200',
-            'userID': responseBody['session_ID'] ?? '',
+            'session_id': responseBody['session_ID'] ?? '',
           };
         } else if (responseBody['status'] == '400') {
           return {
@@ -266,6 +266,47 @@ class AuthService {
     } catch (e) {
       print('Error in verifyUser: $e');
       return {'status': '500'};
+    }
+  }
+
+
+Future<Map<String, String>> logoutUser(String sessionsID,
+      Account account, Databases databases) async {
+    Client client = Client()
+        .setEndpoint(Config.appwriteEndpoint)
+        .setProject(Config.appwriteProjectId)
+        .setSelfSigned(status: true);
+    Functions functions = Functions(client);
+    try {
+      Execution result = await functions.createExecution(
+        functionId: "sessionManagement",
+        body: json.encode({
+          "sessionsID": sessionsID,
+        }),
+        method: ExecutionMethod.dELETE,
+      );
+      if (result.status == 'completed') {
+        final responseBody = json.decode(result.responseBody);
+        print(responseBody);
+        if (responseBody['status'] == '200') {
+          return {
+            'status': '200',
+          };
+        } else if (responseBody['status'] == '400') {
+          return {
+            'status': '400',
+          };
+        } else {
+          return {'status':'ERR'};
+        }
+      } else {
+        print('Function execution failed: ${result.status}');
+        return {'status':'ERR'};
+      }
+    } catch (e) {
+      // Handle error
+      print('Error : $e');
+      return {'status':'ERR'};
     }
   }
 }

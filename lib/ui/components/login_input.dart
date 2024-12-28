@@ -102,6 +102,8 @@ class _LoginInputState extends State<LoginInput> {
               child: Text('Oui'.tr()),
               onPressed: () async {
                 Navigator.of(context).pop(); // Close the dialog
+                print("saved the new : "+ new_id);
+                await storage.write(key: 'new_user_id', value: new_id);
                 final authService = AuthService();
                 String result = await authService.sendSMS(
                   completePhoneNumber!,
@@ -170,6 +172,8 @@ class _LoginInputState extends State<LoginInput> {
               onPressed: () async {
                 Navigator.of(context).pop(); // Close the dialog
                 final authService = AuthService();
+                print("saved the new : "+ new_id);
+                await storage.write(key: 'new_user_id', value: new_id);
                 String result = await authService.sendSMS(
                   completePhoneNumber!,
                   getPlatform(),
@@ -350,11 +354,10 @@ class _LoginInputState extends State<LoginInput> {
                       account,
                       databases,
                     );
-                    print("testii: $result"); // Add this line for debugging
-
                     if (result['status'] == '200') {
                       String userID = result['userID'] ?? '';
                       print("UserID li jawtah: $userID"); // Add this line for debugging
+                      await storage.write(key: 'new_user_id', value: userID);
                       String smsResult = await authService.sendSMS(
                         completePhoneNumber!,
                         getPlatform(),

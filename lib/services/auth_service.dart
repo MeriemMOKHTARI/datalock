@@ -6,10 +6,12 @@ import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../config/config.dart';
 
 class AuthService {
   String? ipAddress;
+  final FlutterSecureStorage storage = FlutterSecureStorage();
   Future<String> sendSMS(
       String phoneNumber,
       String platform,
@@ -21,8 +23,10 @@ class AuthService {
         .setEndpoint(Config.appwriteEndpoint)
         .setProject(Config.appwriteProjectId)
         .setSelfSigned(status: true);
-        print(entry_id);
     Functions functions = Functions(client);
+    final storage = FlutterSecureStorage();
+    final id = await storage.read(key: 'new_user_id');
+    print('new id : '+ id!);
     try {
       Execution result = await functions.createExecution(
         functionId: Config.SEND_SMS_FUNCTION_ID,
@@ -30,7 +34,7 @@ class AuthService {
           "phoneNumber": phoneNumber,
           "platform": "and",
           "ipAdressUser": "255.255.255.255",
-          "entry_id": entry_id
+          "entry_id": id
         }),
       );
       if (result.status == 'completed') {
@@ -39,7 +43,6 @@ class AuthService {
         if (responseBody['status'] == 200) {
           print('SMS sent successfully');
           return '200';
-          // Handle successful SMS send
         } else if (responseBody['status'] == 333) {
           print('blocked user');
           return '333';
@@ -65,21 +68,20 @@ class AuthService {
         .setProject(Config.appwriteProjectId)
         .setSelfSigned(status: true);
     Functions functions = Functions(client);
+    final storage = FlutterSecureStorage();
+    final id = await storage.read(key: 'new_user_id');
+    print('new id : '+ id!);
     try {
-      print(
-          'Sending OTP verification request for phone: $phoneNumber, OTP: $otp');
       Execution result = await functions.createExecution(
         functionId: "6744a9f8001f83732f40",
         body: json.encode({
           "phoneNumber": phoneNumber,
-          "otpInput":
-              otp,
-              "userID":entry_id,                                      
+          "otpInput": otp,
+              "userID":id,
         }),
       );
       print('Function execution status: ${result.status}');
       print('Function response body: ${result.responseBody}');
-
       if (result.status == 'completed') {
         final responseBody = json.decode(result.responseBody);
         print('Decoded response body: $responseBody');
@@ -131,12 +133,15 @@ class AuthService {
         .setProject(Config.appwriteProjectId)
         .setSelfSigned(status: true);
     Functions functions = Functions(client);
+    final storage = FlutterSecureStorage();
+    final id = await storage.read(key: 'new_user_id');
+    print('new id : '+ id!);
     try {
       Execution result = await functions.createExecution(
         functionId: "saveUserInfo",
         body: json.encode({
           "phoneNumber": phoneNumber,
-          "user_id": entry_id,
+          "user_id": id,
           "name": name,
           "familyName": familyname,
           "platform_user": platform,
@@ -236,6 +241,7 @@ class AuthService {
         print(responseBody); 
         if (responseBody['status'] == '200') {
           print('User exists with matching all details');
+          await storage.write(key: 'new_user_id', value: responseBody['userID']);
           return {
             'status': '200',
             'userID': responseBody['userID'] ?? '',

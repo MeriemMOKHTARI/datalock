@@ -375,7 +375,7 @@ class _LoginInputState extends State<LoginInput> {
                     );
                     if (result['status'] == '200') {
                       String userID = result['userID'] ?? '';
-                      print("UserID li jawtah: $userID"); // Add this line for debugging
+
                       await storage.write(key: 'new_user_id', value: userID);
                       String smsResult = await authService.sendSMS(
                         completePhoneNumber!,

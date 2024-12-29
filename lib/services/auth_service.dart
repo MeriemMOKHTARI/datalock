@@ -18,7 +18,7 @@ class AuthService {
       await storage.write(key: 'phone_number', value: phoneNumber);
       await storage.write(key: 'user_id', value: userId);
       await storage.write(key: 'session_id', value: sessionId);
-
+// comment added
     } catch (e) {
       print('Error saving user session: $e');
     }

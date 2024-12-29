@@ -12,6 +12,17 @@ import '../config/config.dart';
 class AuthService {
   String? ipAddress;
   final FlutterSecureStorage storage = FlutterSecureStorage();
+
+  Future<void> saveUserSession(String phoneNumber, String userId, String sessionId) async {
+    try {
+      await storage.write(key: 'phone_number', value: phoneNumber);
+      await storage.write(key: 'user_id', value: userId);
+      await storage.write(key: 'session_id', value: sessionId);
+
+    } catch (e) {
+      print('Error saving user session: $e');
+    }
+  }
   Future<String> sendSMS(
       String phoneNumber,
       String platform,
@@ -26,7 +37,7 @@ class AuthService {
     Functions functions = Functions(client);
     final storage = FlutterSecureStorage();
     final id = await storage.read(key: 'new_user_id');
-    print('new id : '+ id!);
+    await storage.write(key: 'phoneNumber' , value: phoneNumber);
     try {
       Execution result = await functions.createExecution(
         functionId: Config.SEND_SMS_FUNCTION_ID,
@@ -196,6 +207,7 @@ class AuthService {
         final responseBody = json.decode(result.responseBody);
         print(responseBody);
         if (responseBody['status'] == '200') {
+          await saveUserSession(phoneNumber, entry_id , responseBody['session_ID']);
           return {
             'status': '200',
             'session_id': responseBody['session_ID'] ?? '',

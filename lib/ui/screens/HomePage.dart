@@ -23,22 +23,34 @@ class _HomePageState extends State<HomePage> {
   final account = Config.getAccount();
   final databases = Config.getDatabases();
   final functions = Config.getFunctions();
+  late AuthService _authService;
 
   @override
-  void initState() {
+  void initState()   {
     super.initState();
+    _authService = AuthService();
     _checkNotificationPermissionStatus();
+    _saveSession();
   }
+
 
   Future<void> _checkNotificationPermissionStatus() async {
     final prefs = await SharedPreferences.getInstance();
     bool alreadyRequested =
         prefs.getBool('notification_permission_requested') ?? false;
-
     if (mounted) {
       setState(() {
         _showNotificationPermission = !alreadyRequested;
       });
+    }
+  }
+
+  Future<void> _saveSession() async {
+    final sessionID = await storage.read(key: 'session_id');
+    if (sessionID == null){
+      final id = await storage.read(key: 'new_user_id');
+      final phoneNumber = await storage.read(key: 'phoneNumber');
+      _authService.uploadUserSession(phoneNumber!, id!, account, databases);
     }
   }
 
@@ -90,9 +102,11 @@ class _HomePageState extends State<HomePage> {
                         TextButton(
                             onPressed: () async {
                               final authService = AuthService();
-                              String session_ID = await storage
-                                  .read(key: 'session_id')
-                                  .toString();
+                              final session_ID = await storage.read(key: 'session_id');
+                              print(session_ID);
+                              if (session_ID == null){
+                                return;
+                              }
                               Map<String, String> result = await authService
                                   .logoutUser(session_ID, account, databases);
                                   print("meriem session" + session_ID);

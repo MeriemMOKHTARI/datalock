@@ -194,12 +194,13 @@ class AuthService {
         .setProject(Config.appwriteProjectId)
         .setSelfSigned(status: true);
     Functions functions = Functions(client);
+    final id = await storage.read(key: 'new_user_id');
     try {
       Execution result = await functions.createExecution(
         functionId: "sessionManagement",
         body: json.encode({
           "phoneNumber": phoneNumber,
-          "userID": entry_id,
+          "userID": id,
         }),
         method: ExecutionMethod.pOST,
       );

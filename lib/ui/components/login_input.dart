@@ -102,7 +102,6 @@ class _LoginInputState extends State<LoginInput> {
               child: Text('Oui'.tr()),
               onPressed: () async {
                 Navigator.of(context).pop(); // Close the dialog
-                print("saved the new : "+ new_id);
                 await storage.write(key: 'new_user_id', value: new_id);
                 final authService = AuthService();
                 String result = await authService.sendSMS(

@@ -201,10 +201,7 @@ print("resultat tae save user infos" + result);
                     print('infos saved successfully');
                     Map<String, String> result2 = await authService.uploadUserSession(
                         widget.phoneNumber, widget.userId, account, databases);
-                        print("after call upload user session result2=");
-                        print(result2);
-                        print("parametre li raha tdihom " + widget.phoneNumber + "id litadih="+ widget.userId);
-                    if (result2['status'] == '200') {
+                        if (result2['status'] == '200') {
                       String sessionId = result2['session_id'] ?? '';
                         await saveUserSession(widget.phoneNumber, widget.userId, sessionId);
                       print('session saved successfully');

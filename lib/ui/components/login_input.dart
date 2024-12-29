@@ -90,7 +90,8 @@ class _LoginInputState extends State<LoginInput> {
         return AlertDialog(
           title: Text('Vérification_des_coordonnées'.tr()),
           content: Text(
-              'Votre_nom_et_prénom_ne_correspondent_pas_avec_votre_N°_de_téléphone_,_continuez_quand_même_?'.tr()),
+            'Votre nom et prenom ne correspondent pas avec votre N° de telephone , continuez quand meme ?'.tr(),
+          ),
           actions: <Widget>[
             TextButton(
               child: Text('Non'.tr()),
@@ -159,7 +160,8 @@ class _LoginInputState extends State<LoginInput> {
         return AlertDialog(
           title: Text('Vérification_des_coordonnées'.tr()),
           content: Text(
-               'Votre_nom_et_prénom_ne_correspondent_pas_avec_votre_N°_de_téléphone,_continuez_quand_même_?'.tr()),
+            'Votre nom et prenom ne correspondent pas avec votre N° de telephone , continuez quand meme ?'.tr(),
+          ),
           actions: <Widget>[
             TextButton(
               child: Text('Non'.tr()),
@@ -344,7 +346,25 @@ class _LoginInputState extends State<LoginInput> {
                 final name = nameController.text;
                 final prenom = prenomController.text;
 
-                if (name.isNotEmpty && prenom.isNotEmpty && isPhoneValid) {
+                if (name.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Please_enter_a_valid_name'.tr()),
+                    ),
+                  );
+                } else if (prenom.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Please_enter_a_valid_prenom'.tr()),
+                    ),
+                  );
+                } else if (isPhoneValid == false) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Please_enter_a_valid_phone_number'.tr()),
+                    ),
+                  );
+                } else {
                   final authService = AuthService();
                   try {
                     Map<String, String> result = await authService.verifyUser(

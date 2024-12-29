@@ -165,9 +165,10 @@
   "Veuillez_sélectionner_votre_ville":"Veuillez sélectionner votre ville",
   "OK":"OK",
   "Vérification_des_coordonnées":"Vérification des coordonnées",
-  "Votre_nom_et_prrenom_ne_correspondent_pas_avec_votre_N°_de_telephone_,_continuez_quand_meme_? ":"Votre nom et prrenom ne correspondent pas avec votre N° de telephone, continuez quand meme ?",
+  "Votre nom et prenom ne correspondent pas avec votre N° de telephone , continuez quand meme ? ":"Votre nom et prenom ne correspondent pas avec votre N° de telephone, continuez quand meme ?",
   "Failed_to_send_SMS._Please_try_again.":"Failed to send SMS. Please try again.",
-  "An_error_occurred._Please_try_again.":"An error occurred. Please try again."
+  "An_error_occurred._Please_try_again.":"An error occurred. Please try again.",
+  "Votre nom et prenom ne correspondent pas avec votre N° de telephone , continuez quand meme ?":"Votre nom et prenom ne correspondent pas avec votre N° de telephone , continuez quand meme ?"
 
 
   }

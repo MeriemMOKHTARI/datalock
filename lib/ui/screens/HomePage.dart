@@ -95,6 +95,7 @@ class _HomePageState extends State<HomePage> {
                                   .toString();
                               Map<String, String> result = await authService
                                   .logoutUser(session_ID, account, databases);
+                                  print("meriem session" + session_ID);
                               if (result['status'] == '200') {
                                 await logout();
                                 Navigator.of(context).pushReplacement(

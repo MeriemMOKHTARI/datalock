@@ -163,8 +163,8 @@
   "Veuillez_sélectionner_votre_ville":"Please select your city",
   "OK":"OK",
   "Vérification_des_coordonnées":"Verification of coordinates",
-  "Votre_nom_et_prénom_ne_correspondent_pas_avec_votre_N°_de_téléphone_,_continuez_quand_même_? ":"Your name and first name do not match with your phone number, continue anyway ?",
   "Failed_to_send_SMS._Please_try_again.":"Failed to send SMS. Please try again.",
-  "An_error_occurred._Please_try_again.":"An error occurred. Please try again."
+  "An_error_occurred._Please_try_again.":"An error occurred. Please try again.",
+  "Votre nom et prenom ne correspondent pas avec votre N° de telephone , continuez quand meme ?":"Your name and first name do not match with your phone number, do you want to continue?"
 
   }

@@ -170,8 +170,8 @@
   "Veuillez_sélectionner_votre_ville":"الرجاء تحديد مدينتك",
   "OK": "موافق",
   "Vérification_des_coordonnées":"تحقق من المعلومات الشخصية",
-  "Votre_nom_et_prénom_ne_correspondent_pas_avec_votre_N°_de_téléphone_,_continuez_quand_même_?":"لم يتطابق الاسم و اللقب مع رقم الهاتف الخاص بك. هل ترغب في المتابعة ؟",
   "Failed_to_send_SMS._Please_try_again.":"فشل في ارسال الرسالة. يرجى المحاولة مرة اخرى.",
-  "An_error_occurred._Please_try_again.":"حدث خطأ. يرجى المحاولة مرة اخرى."
+  "An_error_occurred._Please_try_again.":"حدث خطأ. يرجى المحاولة مرة اخرى.",
+  "Votre nom et prenom ne correspondent pas avec votre N° de telephone , continuez quand meme ?":"الاسم والاسم الاول غير متطابقان مع رقم الهاتف الخاص بك، قم بالمتابعة مرة اخرى؟"
 
 }

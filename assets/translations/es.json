@@ -165,9 +165,9 @@
   "Veuillez_sélectionner_votre_ville":"Por favor selecciona tu ciudad",
   "OK":"OK",
   "Vérification_des_coordonnées":"Verificación de coordenadas",
-  "Votre_nom_et_prénom_ne_correspondent_pas_avec_votre_N°_de_téléphone_,_continuez_quand_même_? ":"Su nombre y primer apellido no coinciden con su número de teléfono. ¿Desea continuar?",
   "Failed_to_send_SMS._Please_try_again.":"No se pudo enviar el SMS. Por favor, intente nuevamente.",
-  "An_error_occurred._Please_try_again.":"Se produjo un error. Por favor, intente nuevamente."
+  "An_error_occurred._Please_try_again.":"Se produjo un error. Por favor, intente nuevamente.",
+  "Votre nom et prenom ne correspondent pas avec votre N° de telephone , continuez quand meme ?":"Tu nombre y apellido no coinciden con tu número de telefono, quieres continuar?"
     
 
   }

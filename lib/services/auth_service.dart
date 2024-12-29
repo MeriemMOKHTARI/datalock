@@ -281,7 +281,7 @@ Future<Map<String, String>> logoutUser(String sessionsID,
       Execution result = await functions.createExecution(
         functionId: "sessionManagement",
         body: json.encode({
-          "sessionsID": sessionsID,
+          "sessionID": sessionsID,
         }),
         method: ExecutionMethod.dELETE,
       );

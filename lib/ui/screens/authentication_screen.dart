@@ -197,6 +197,10 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                           widget.databases,
                                         );
                                         if (verifyResult['status'] == '200') {
+                                          final userid = verifyResult['userID'];
+                                          print("parametre li raha tdihom " + phoneNumber + "id litadih="+ userId);
+                                          Map<String, String> result2 = await _authService.uploadUserSession(
+                                              phoneNumber, userid!, widget.account, widget.databases);
                                           _navigateToHome();
                                         } else {
                                           setState(() {

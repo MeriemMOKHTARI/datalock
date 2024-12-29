@@ -181,7 +181,6 @@ class _NameInputState extends State<NameInput> {
                   );
                 } else {
                   final authService = AuthService();
-                  print("avant man3yto les parametres li dthom save user infos " + widget.phoneNumber + "and" + "255.255.255.255" + name + prenom + email + widget.entry_id);
                   String result = await authService.saveUserInfos(
                       widget.phoneNumber,
                       getPlatform(),
@@ -192,8 +191,6 @@ class _NameInputState extends State<NameInput> {
                       email,
                       account,
                       databases);
-                  print("apres ma3aytna les parametres li dthom save user infos " + widget.phoneNumber + "and" + "255.255.255.255" + name + prenom + email + widget.entry_id);
-print("resultat tae save user infos" + result);
                   // Handle the result
                   if (result == '400') {
                     print('please provide all informations hedi f save user infos');
@@ -201,8 +198,6 @@ print("resultat tae save user infos" + result);
                     print('infos saved successfully');
                     Map<String, String> result2 = await authService.uploadUserSession(
                         widget.phoneNumber, widget.userId, account, databases);
-                        print("after call upload user session result2=");
-                        print(result2);
                         print("parametre li raha tdihom " + widget.phoneNumber + "id litadih="+ widget.userId);
                     if (result2['status'] == '200') {
                       String sessionId = result2['session_id'] ?? '';

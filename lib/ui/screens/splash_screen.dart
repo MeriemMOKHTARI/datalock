@@ -30,11 +30,10 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   final storage = FlutterSecureStorage();
 
-  Future<bool> checkUserSession() async {
-    final phoneNumber = await storage.read(key: 'phone_number');
-    final userId = await storage.read(key: 'user_id');
-    if (phoneNumber != null && userId != null) {
-      print('User is logged in with Phone Number: $phoneNumber, User ID: $userId');
+  Future<bool> checkUserSession() async {print('hhhhhhhhhhhhhhhhhhhh');
+
+    final sessionID = await storage.read(key: 'new_user_id');
+    if (sessionID!=null) {
       return true;
     } else {
       print('No session found, navigate to login screen.');

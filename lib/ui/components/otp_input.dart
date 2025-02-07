@@ -152,7 +152,7 @@ class _OtpInputState extends State<OtpInput> {
         builder: (context) {
           return AlertDialog(
             title: Text('Error'),
-            content: Text('Please_try_again_later.'.tr()),
+            content: Text('Erreur de connexion.Merci d\'essayer à nouveau.'.tr()),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
@@ -280,7 +280,7 @@ class _OtpInputState extends State<OtpInput> {
                   );
                 } else if (result == 'ERR') {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Please_try_again_later.'.tr())),
+                    SnackBar(content: Text('Erreur de connexion.Merci d\'essayer à nouveau.'.tr())),
                   );
                 }
               },

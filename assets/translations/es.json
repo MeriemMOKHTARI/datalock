@@ -167,7 +167,21 @@
   "Vérification_des_coordonnées":"Verificación de coordenadas",
   "Failed_to_send_SMS._Please_try_again.":"No se pudo enviar el SMS. Por favor, intente nuevamente.",
   "An_error_occurred._Please_try_again.":"Se produjo un error. Por favor, intente nuevamente.",
-  "Votre nom et prenom ne correspondent pas avec votre N° de telephone , continuez quand meme ?":"Tu nombre y apellido no coinciden con tu número de telefono, quieres continuar?"
+  "Votre nom et prenom ne correspondent pas avec votre N° de telephone , continuez quand meme ?":"Tu nombre y apellido no coinciden con tu número de telefono, quieres continuar?",
+  "Erreur de connexion.Merci d'essayer à nouveau.":"Error de conexión. Por favor, intente nuevamente.",
+  "Déja inscrit ?":"Ya registrado?",
+  "connectez-vous":"conectate",
+  "Introduisez vos coordonnées":"Introduce tus coordenadas",
+  "Nom":"Nombre",
+  "Prenom":"Primer nombre",
+  "Email":"Correo",
+  "N° de telephone":"Número de telefono",
+  "Veuillez choisir votre ville":"Por favor, elige tu ciudad",
+  "Veuillez indiquer vos coordonnées pour récupérer votre compte":"Por favor, introduce tus coordenadas para recuperar tu cuenta",
+  "Connexion":"Conectar",
+  "Votre N° de telephone ne correspond pas avec votre nom et prenom , continuez quand meme ?":"Tu número de telefono no coincide con tu nombre y primer nombre, quieres continuar?",
+  "Confirmation":"Confirmar",
+  "Êtes-vous sûr de vouloir vous déconnecter ?":"Estas seguro de querer desconectarte?"
     
 
   }

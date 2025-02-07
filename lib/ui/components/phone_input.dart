@@ -314,9 +314,9 @@ showDialog(
         fontSize: 14,
       ),
       children: [
-        flutter.TextSpan(text: 'Déja inscrit ? '),
+        flutter.TextSpan(text: 'Déja inscrit ?'.tr() + ' '),
         flutter.TextSpan(
-          text: 'connectez-vous',
+          text: 'connectez-vous'.tr(),
           style: flutter.TextStyle(
             decoration: flutter.TextDecoration.underline,
             color: flutter.Theme.of(context).primaryColor,

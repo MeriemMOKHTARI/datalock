@@ -168,7 +168,21 @@
   "Votre nom et prenom ne correspondent pas avec votre N° de telephone , continuez quand meme ? ":"Votre nom et prenom ne correspondent pas avec votre N° de telephone, continuez quand meme ?",
   "Failed_to_send_SMS._Please_try_again.":"Failed to send SMS. Please try again.",
   "An_error_occurred._Please_try_again.":"An error occurred. Please try again.",
-  "Votre nom et prenom ne correspondent pas avec votre N° de telephone , continuez quand meme ?":"Votre nom et prenom ne correspondent pas avec votre N° de telephone , continuez quand meme ?"
+  "Votre nom et prenom ne correspondent pas avec votre N° de telephone , continuez quand meme ?":"Votre nom et prenom ne correspondent pas avec votre N° de telephone , continuez quand meme ?",
+  "Votre N° de telephone ne correspond pas avec votre nom et prenom , continuez quand meme ?":"Votre N° de telephone ne correspond pas avec votre nom et prenom , continuez quand meme ?",
+  "Erreur de connexion.Merci d'essayer à nouveau.":"Erreur de connexion. Merci d'essayer à nouveau.",
+  "Déja inscrit ?":"Déja inscrit ?",
+  "connectez-vous":"connectez-vous",
+  "Introduisez vos coordonnées":"Introduisez vos coordonnées",
+  "Nom":"Nom",
+  "Prenom":"Prenom",
+  "Email":"Email",
+  "N° de telephone":"N° de telephone",
+  "Veuillez choisir votre ville":"Veuillez choisir votre ville",
+  "Veuillez indiquer vos coordonnées pour récupérer votre compte":"Veuillez indiquer vos coordonnées pour récupérer votre compte",
+  "Connexion":"Connexion",
+  "Confirmation":"Confirmation",
+  "Êtes-vous sûr de vouloir vous déconnecter ?":"Êtes-vous sûr de vouloir vous déconnecter ?"
 
 
   }

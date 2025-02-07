@@ -351,8 +351,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                                 ),
                                                 TextSpan(
                                                   text:
-                                                      "politique_de_confidentialité"
-                                                          .tr(),
+                                                      'politique de confidentialité'.tr(),
                                                   style: TextStyle(
                                                     color: Colors.grey[600],
                                                     decoration: TextDecoration

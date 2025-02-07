@@ -26,13 +26,12 @@ class _HomePageState extends State<HomePage> {
   late AuthService _authService;
 
   @override
-  void initState()   {
+  void initState() {
     super.initState();
     _authService = AuthService();
     _checkNotificationPermissionStatus();
     _saveSession();
   }
-
 
   Future<void> _checkNotificationPermissionStatus() async {
     final prefs = await SharedPreferences.getInstance();
@@ -47,7 +46,9 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _saveSession() async {
     final sessionID = await storage.read(key: 'session_id');
-    if (sessionID == null){
+    print("Session ID récupéré: $sessionID ");
+
+    if (sessionID == null) {
       final id = await storage.read(key: 'new_user_id');
       final phoneNumber = await storage.read(key: 'phoneNumber');
       _authService.uploadUserSession(phoneNumber!, id!, account, databases);
@@ -100,16 +101,50 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                         TextButton(
-                            onPressed: () async {
+                          onPressed: () async {
+                            bool confirmLogout = await showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Confirmation".tr()),
+                                  content: Text(
+                                      "Êtes-vous sûr de vouloir vous déconnecter ?"
+                                          .tr()),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pop(false); // Annuler
+                                      },
+                                      child: Text("Non".tr()),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context)
+                                            .pop(true); // Confirmer
+                                      },
+                                      child: Text("Oui".tr()),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+
+                            if (confirmLogout == true) {
                               final authService = AuthService();
-                              final session_ID = await storage.read(key: 'session_id');
+                              final session_ID =
+                                  await storage.read(key: 'session_id');
                               print(session_ID);
-                              if (session_ID == null){
+                              if (session_ID == null) {
                                 return;
                               }
-                              Map<String, String> result = await authService
-                                  .logoutUser(session_ID, account, databases);
-                                  print("meriem session" + session_ID);
+                              Map<String, String> result =
+                                  await authService.logoutUser(
+                                session_ID,
+                                account,
+                                databases,
+                              );
+                              print("meriem session" + session_ID);
                               if (result['status'] == '200') {
                                 await logout();
                                 Navigator.of(context).pushReplacement(
@@ -122,9 +157,10 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 );
                               }
-                            },
-                            child: const Icon(Icons.logout) //////////LOGOUT
-                            ),
+                            }
+                          },
+                          child: const Icon(Icons.logout), //////////LOGOUT
+                        ),
                       ],
                     ),
                   ),

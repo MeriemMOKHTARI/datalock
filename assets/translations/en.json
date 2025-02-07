@@ -165,6 +165,19 @@
   "Vérification_des_coordonnées":"Verification of coordinates",
   "Failed_to_send_SMS._Please_try_again.":"Failed to send SMS. Please try again.",
   "An_error_occurred._Please_try_again.":"An error occurred. Please try again.",
-  "Votre nom et prenom ne correspondent pas avec votre N° de telephone , continuez quand meme ?":"Your name and first name do not match with your phone number, do you want to continue?"
-
+  "Votre nom et prenom ne correspondent pas avec votre N° de telephone , continuez quand meme ?":"Your name and first name do not match with your phone number, do you want to continue?",
+  "Erreur de connexion.Merci d'essayer à nouveau.":"Connection error. Please try again.",
+  "Déja inscrit ?":"Already registered?",
+  "connectez-vous":"login",
+  "Introduisez vos coordonnées":"Enter your coordinates",
+  "Nom":"Name",
+  "Prenom":"First name",
+  "Email":"Email",
+  "N° de telephone":"Phone number",
+  "Veuillez choisir votre ville":"Please select your city",
+  "Veuillez indiquer vos coordonnées pour récupérer votre compte":"Please enter your coordinates to retrieve your account",
+  "Connexion":"Login",
+  "Votre N° de telephone ne correspond pas avec votre nom et prenom , continuez quand meme ?":"Your phone number does not match with your name and first name, do you want to continue?",
+  "Confirmation":"Confirmation",
+  "Êtes-vous sûr de vouloir vous déconnecter ?":"Are you sure you want to log out?"
   }

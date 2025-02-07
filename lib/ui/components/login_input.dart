@@ -141,7 +141,7 @@ class _LoginInputState extends State<LoginInput> {
                   // Show an error message if SMS sending fails
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                        content: Text('Failed_to_send_SMS._Please_try_again.'.tr())),
+                        content: Text('Erreur de connexion.Merci d\'essayer à nouveau.'.tr())),
                   );
                 }
               },
@@ -159,7 +159,7 @@ class _LoginInputState extends State<LoginInput> {
         return AlertDialog(
           title: Text('Vérification_des_coordonnées'.tr()),
           content: Text(
-            'Votre nom et prenom ne correspondent pas avec votre N° de telephone , continuez quand meme ?'.tr(),
+            'Votre N° de telephone ne correspond pas avec votre nom et prenom , continuez quand meme ?'.tr(),
           ),
           actions: <Widget>[
             TextButton(
@@ -211,7 +211,7 @@ class _LoginInputState extends State<LoginInput> {
                   // Show an error message if SMS sending fails
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                        content: Text('Failed to send SMS. Please try again.')),
+                        content: Text('Erreur de connexion.Merci d\'essayer à nouveau.'.tr())),
                   );
                 }
               },
@@ -250,8 +250,7 @@ class _LoginInputState extends State<LoginInput> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Veuillez indiquer vos coordonnées pour récupérer votre compte'
-                  .tr(),
+              'Veuillez indiquer vos coordonnées pour récupérer votre compte'.tr(),
               style: TextStyle(
                 color: Colors.grey[600],
                 fontSize: 16,
@@ -260,12 +259,12 @@ class _LoginInputState extends State<LoginInput> {
             const SizedBox(height: 24),
             CustomTextField(
               controller: nameController,
-              hintText: 'name'.tr(),
+              hintText: 'Nom'.tr(),
             ),
             const SizedBox(height: 16),
             CustomTextField(
               controller: prenomController,
-              hintText: 'forename'.tr(),
+              hintText: 'Prenom'.tr(),
             ),
             const SizedBox(height: 16),
             Container(
@@ -277,7 +276,7 @@ class _LoginInputState extends State<LoginInput> {
                 key: _phoneFieldKey,
                 controller: phoneController,
                 decoration: InputDecoration(
-                  hintText: 'phone_number'.tr(),
+                  hintText: 'N° de telephone'.tr(),
                   counterText: '',
                   errorText: errorMessage,
                   border: OutlineInputBorder(
@@ -409,7 +408,7 @@ class _LoginInputState extends State<LoginInput> {
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Failed_to_send_SMS._Please_try_again.'.tr())),
+                          SnackBar(content: Text('Erreur de connexion.Merci d\'essayer à nouveau.'.tr())),
                         );
                       }
                     } else if (result['status'] == '201') {
@@ -419,13 +418,13 @@ class _LoginInputState extends State<LoginInput> {
                     } else {
                       print("Unexpected result from verifyUser: $result");
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('An_error_occurred._Please_try_again.'.tr())),
+                        SnackBar(content: Text('Erreur de connexion.Merci d\'essayer à nouveau.'.tr())),
                       );
                     }
                   } catch (e) {
                     print("Error during verification or SMS sending: $e");
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('An_error_occurred._Please_try_again.'.tr())),
+                      SnackBar(content: Text('Erreur de connexion.Merci d\'essayer à nouveau.'.tr())),
                     );
                   }
                 }

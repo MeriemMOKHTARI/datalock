@@ -58,30 +58,44 @@ class Config {
   static const String appName = 'Datalock';
 
   // Logo Widget
+/*************  ✨ Codeium Command ⭐  *************/
+/// Builds a logo widget which consists of a circular container with a
+/// centered text 'LOGO' and the app name below it.
+/// 
+/// The circular container has a fixed size of 100x100 pixels and a white
+/// background color. The app name is displayed in bold white text with a
+/// font size of 24 below the container.
+
+/******  4024401b-3600-4f8d-a02d-694db573be7a  *******/
   static Widget buildLogo() {
-    return Column(
-      children: [
-        Container(
-          width: 100,
-          height: 100,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.circle,
-          ),
-          child: Center(child: Text('LOGO'))
+  return Column(
+    children: [
+      Container(
+        width: 100,
+        height: 100,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
         ),
-        const SizedBox(height: 13),
-        Text(
-          appName,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+        child: ClipOval( 
+          child: Image.asset(
+            'assets/images/logo.png', 
+            fit: BoxFit.cover,        
           ),
         ),
-      ],
-    );
-  }
+      ),
+      const SizedBox(height: 13),
+      // Text(
+      //   appName,
+      //   style: const TextStyle(
+      //     color: Colors.white,
+      //     fontSize: 24,
+      //     fontWeight: FontWeight.bold,
+      //   ),
+      // ),
+    ],
+  );
+}
+
 
 static const String onboardingTitle1 = "Bienvenue";
 static const String onboardingDesc1 = "Ravi de vous rencontrer. Nous sommes heureux de vous accueillir.";

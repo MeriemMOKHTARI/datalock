@@ -73,7 +73,7 @@
     "En_vous_connectant_vous_acceptez_les":"En vous connectant, vous acceptez les ",
     "conditions_générales_d_utilisations":"Conditions générales d'utilisation",
     "et_la":" et la ",
-    "politique de confidentialité":"politique de confidentialité",
+    "Politique de confidentialité":"politique de confidentialité",
     "1_Données_Collectées": "1. Données Collectées",
     "Données_Collectées_Contenu": "- Informations personnelles : nom, prénom, numéro de téléphone, adresse e-mail, adresse de livraison.\n- Données liées à l'utilisation : historique des commandes, préférences alimentaires, localisation.",
     "2_Utilisation_des_Données": "2. Utilisation des Données",
@@ -182,7 +182,9 @@
   "Veuillez indiquer vos coordonnées pour récupérer votre compte":"Veuillez indiquer vos coordonnées pour récupérer votre compte",
   "Connexion":"Connexion",
   "Confirmation":"Confirmation",
-  "Êtes-vous sûr de vouloir vous déconnecter ?":"Êtes-vous sûr de vouloir vous déconnecter ?"
-
+  "Êtes-vous sûr de vouloir vous déconnecter ?":"Êtes-vous sûr de vouloir vous déconnecter ?",
+  "Find_your_favorite_store":"trouver votre meilleur restaurant !",
+  "Popular_stores":"Restaurants populaires",
+  "New_stores":"Restaurants nouveaux"
 
   }

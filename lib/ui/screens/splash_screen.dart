@@ -88,6 +88,8 @@ class _SplashScreenState extends State<SplashScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => OnboardingScreen(),
+          //HomePage(),
+          //OnboardingScreen(),
           //  AuthenticationScreen(
           //   account: widget.account,
           //   databases: widget.databases,

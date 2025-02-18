@@ -332,7 +332,7 @@ Container(
               text: 'login'.tr(),
             ),
 
-                 flutter.SizedBox(height: 20),
+                 flutter.SizedBox(height: 16),
             flutter.Center(
               child: flutter.GestureDetector(
           onTap: widget.onLoginTap,

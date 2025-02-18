@@ -58,7 +58,7 @@
      "En_vous_connectant_vous_acceptez_les":"By connecting, you accept the ",
      "conditions_générales_d_utilisations":"terms and conditions of use",
      "et_la":" and ",
-     "politique de confidentialité":"privacy policy",
+     "Politique de confidentialité":"privacy policy",
      "Les_restaurants_partenaires_sont_responsables_de_la_qualité_et_de_la_disponibilité_des_produits_commandés.":"Partners restaurants are responsible for the quality and availability of ordered products.",
      "3_Livraison": "3. Delivery",
     "La_livraison_est_assurée_uniquement_dans_les_zones_couvertes_par_notre_service.": "Delivery is only available in areas covered by our service.",
@@ -179,5 +179,8 @@
   "Connexion":"Login",
   "Votre N° de telephone ne correspond pas avec votre nom et prenom , continuez quand meme ?":"Your phone number does not match with your name and first name, do you want to continue?",
   "Confirmation":"Confirmation",
-  "Êtes-vous sûr de vouloir vous déconnecter ?":"Are you sure you want to log out?"
+  "Êtes-vous sûr de vouloir vous déconnecter ?":"Are you sure you want to log out?",
+  "Find_your_favorite_store":"Find your favorite Restaurant",
+  "Popular_stores":"Popular Restaurants",
+  "New_stores":"New Restaurants"
   }

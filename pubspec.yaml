@@ -51,6 +51,7 @@ dependencies:
   package_info_plus: ^8.1.2
   geolocator: ^10.0.0
   permission_handler: ^11.0.0
+  carousel_slider: ^5.0.0
 
 
 dev_dependencies:

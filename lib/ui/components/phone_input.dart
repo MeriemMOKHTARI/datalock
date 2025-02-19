@@ -45,6 +45,8 @@ class _PhoneInputState extends flutter.State<PhoneInput> {
   String lastValidNumber = '';
   String? errorMessage;
   Key _phoneFieldKey = UniqueKey();
+  final FocusNode _focusNode = FocusNode();
+  bool _isFocused = false;
 
   bool _isNumericOnly(String str) {
     return RegExp(r'^[0-9]+$').hasMatch(str);
@@ -69,6 +71,16 @@ class _PhoneInputState extends flutter.State<PhoneInput> {
     PackageInfo.fromPlatform().then((value) {
       print(value);
     });
+    _focusNode.addListener(() {
+      setState(() {
+        _isFocused = _focusNode.hasFocus;
+      });
+    });
+  }
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
   }
 
   Future<void> fetchAndSetIpAddress() async {
@@ -288,12 +300,21 @@ void _sendSMS() async {
               ),
             ),
             flutter.SizedBox(height: 16),
-            flutter.Container(
-              decoration: flutter.BoxDecoration(
-                color: flutter.Colors.grey[100],
-                borderRadius: flutter.BorderRadius.circular(12),
+Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: _isFocused ? [
+                  BoxShadow(
+                    color: flutter.Color.fromARGB(255, 7, 83, 90).withOpacity(0.4),
+                    blurRadius: 8,
+                    spreadRadius: 0.5,
+                    offset: Offset(0, 0),
+                  ),
+                ] : [],
               ),
               child: IntlPhoneField(
+                focusNode: _focusNode, // AJOUTÉ
                 key: _phoneFieldKey,
                 controller: phoneController,
                 decoration: flutter.InputDecoration(
@@ -304,12 +325,20 @@ void _sendSMS() async {
                     borderRadius: flutter.BorderRadius.circular(12),
                     borderSide: flutter.BorderSide.none,
                   ),
+                  enabledBorder: flutter.OutlineInputBorder(
+                    borderRadius: flutter.BorderRadius.circular(12),
+                    borderSide: flutter.BorderSide.none,
+                  ),
+                  focusedBorder: flutter.OutlineInputBorder(
+                    borderRadius: flutter.BorderRadius.circular(12),
+                    borderSide: flutter.BorderSide.none,
+                  ),
                   contentPadding: flutter.EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 16,
                   ),
                   filled: true,
-                  fillColor: flutter.Colors.grey[100],
+                  fillColor: Colors.white,
                 ),
                 initialCountryCode: 'DZ',
                 disableLengthCheck: true,

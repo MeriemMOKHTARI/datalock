@@ -60,7 +60,7 @@
     "En_vous_connectant_vous_acceptez_les":"Al conectarse, aceptas los ",
     "conditions_générales_d_utilisations":"términos y condiciones generales de uso",
     "et_la" : " y la ",
-    "politique de confidentialité":"política de privacidad",
+    "Politique de confidentialité":"política de privacidad",
     "Les_restaurants_partenaires_sont_responsables_de_la_qualité_et_de_la_disponibilité_des_produits_commandés.":"Los restaurantes partenares son responsables de la calidad y disponibilidad de los productos comprados.",
     "3_Livraison": "3. Entrega",
     "La_livraison_est_assurée_uniquement_dans_les_zones_couvertes_par_notre_service.": "La entrega se realiza únicamente en las zonas cubiertas por nuestro servicio.",
@@ -183,7 +183,8 @@
   "Confirmation":"Confirmar",
   "Êtes-vous sûr de vouloir vous déconnecter ?":"Estas seguro de querer desconectarte?",
   "Existing_Account":"Cuenta existente",
-  "You_already_have_an_account._Please_log_in.":"Ya tienes una cuenta. Por favor, conectate."
+  "You_already_have_an_account._Please_log_in.":"Ya tienes una cuenta. Por favor, conectate.",
+  "New_stores":"Tiendas nuevas"
     
 
   }

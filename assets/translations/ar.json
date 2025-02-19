@@ -65,7 +65,7 @@
      "En_vous_connectant_vous_acceptez_les":"تقبلك الاستخدام من خلال الخدمة، تقبلك الشروط التالية",
      "conditions_générales_d_utilisations":"الشروط العامة",
      "et_la":" و ",
-     "politique de confidentialité":"سياسة الخصوصية",
+     "Politique de confidentialité":"سياسة الخصوصية",
      "Les_restaurants_partenaires_sont_responsables_de_la_qualité_et_de_la_disponibilité_des_produits_commandés.":"تتحمل المتاجر الشريكة المسؤولة عن جودة والتواجد المتوقعة لمنتجات الطلبات.",
      "3_Livraison": "3. التوصيل",
     "La_livraison_est_assurée_uniquement_dans_les_zones_couvertes_par_notre_service.": "التوصيل متوفر فقط في المناطق التي يغطيها خدمتنا.",
@@ -189,5 +189,5 @@
   "Êtes-vous sûr de vouloir vous déconnecter ?":"هل انت متاكد من تسجيل الخروج؟",
   "Existing_Account":"حساب موجود",
   "You_already_have_an_account._Please_log_in.":"لديك حساب بالفعل. يرجى تسجيل الدخول."
-
-}
+  "Find_your_favorite_store":"ابحث عن متجرك المفضل",
+  "New_stores":"متاجر جديدة"}

@@ -254,38 +254,38 @@ class _OtpInputState extends State<OtpInput> {
             ),
           ),
             SizedBox(height: 24),
-            CustomButton(
-              onPressed: () async {
-                final authService = AuthService();
-                String result = await authService.VerifyOTP(
-                  widget.phoneNumber,
-                  otpControllers.map((controller) => controller.text).join(''),
-                  widget.entry_id,
-                  account,
-                  databases,
-                );
-                print(widget.phoneNumber +
-                    otpControllers.map((controller) => controller.text).join('') +
-                    widget.entry_id +
-                    result);
-                if (result == '200') {
-                  await widget.onSubmit(widget.userId, widget.phoneNumber, result, widget.name, widget.prenom);
-                } else if (result == '400') {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('please_provide_a_valid_OTP'.tr())),
-                  );
-                } else if (result == '333') {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('incorrect_OTP'.tr())),
-                  );
-                } else if (result == 'ERR') {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Erreur de connexion.Merci d\'essayer à nouveau.'.tr())),
-                  );
-                }
-              },
-              text: 'Continue'.tr(),
-            ),
+         CustomButton(
+  onPressed: () async {
+    final authService = AuthService();
+    String result = await authService.VerifyOTP(
+      widget.phoneNumber,
+      otpControllers.map((controller) => controller.text).join(''),
+      widget.entry_id,
+      account,
+      databases,
+    );
+    print(widget.phoneNumber +
+        otpControllers.map((controller) => controller.text).join('') +
+        widget.entry_id +
+        result);
+    if (result == '200') {
+      await widget.onSubmit(widget.userId, widget.phoneNumber, result, widget.name, widget.prenom);
+    } else if (result == '400') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('please_provide_a_valid_OTP'.tr())),
+      );
+    } else if (result == '333') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('incorrect_OTP'.tr())),
+      );
+    } else if (result == 'ERR') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur de connexion.Merci d\'essayer à nouveau.'.tr())),
+      );
+    }
+  },
+  text: 'Continue'.tr(),
+),
             SizedBox(height: 16),
             Center(
               child: Row(

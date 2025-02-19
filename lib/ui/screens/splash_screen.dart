@@ -1,3 +1,4 @@
+import 'package:datalock/ui/screens/HomeContent.dart';
 import 'package:datalock/ui/screens/HomePage.dart';
 import 'package:datalock/ui/screens/onboarding_screen.dart';
 import 'package:flutter/material.dart';
@@ -97,6 +98,9 @@ class _SplashScreenState extends State<SplashScreen> {
       );
     }
   }
+
+  final account = Config.getAccount();
+
 
   @override
   Widget build(BuildContext context) {

@@ -186,6 +186,8 @@
   "Connexion":"تسجيل الدخول",
   "Votre N° de telephone ne correspond pas avec votre nom et prenom , continuez quand meme ?":"رقم الهاتف الخاص بك غير متطابق مع الاسم والاسم الاول، قم بالمتابعة مرة اخرى؟",
   "Confirmation":"تاكيد",
-  "Êtes-vous sûr de vouloir vous déconnecter ?":"هل انت متاكد من تسجيل الخروج؟"
+  "Êtes-vous sûr de vouloir vous déconnecter ?":"هل انت متاكد من تسجيل الخروج؟",
+  "Existing_Account":"حساب موجود",
+  "You_already_have_an_account._Please_log_in.":"لديك حساب بالفعل. يرجى تسجيل الدخول."
 
 }

@@ -1,10 +1,13 @@
+import 'package:datalock/ui/screens/HomeContent.dart';
+import 'package:datalock/ui/screens/HomePage.dart';
+import 'package:datalock/ui/screens/MapScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'ui/screens/authentication_screen.dart';
 import 'ui/screens/onboarding_screen.dart';
-import 'ui/screens/splash_screen.dart';
+import 'ui/screens/HomePage.dart';
 
 import 'config/config.dart';
 import 'package:flutter/material.dart' as flutter;
@@ -49,11 +52,12 @@ class MyApp extends flutter.StatelessWidget {
       locale: context.locale,
       title: 'app_name'.tr(),
       theme: Config.themeData,
-      home: SplashScreen(
-        account: account,
-        databases: databases,
-        functions: functions,
-      ),
+      home: HomePage(),
+      //  SplashScreen(
+      //   account: account,
+      //   databases: databases,
+      //   functions: functions,
+      // ),
     );
   }
 }

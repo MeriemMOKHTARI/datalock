@@ -179,5 +179,7 @@
   "Connexion":"Login",
   "Votre N° de telephone ne correspond pas avec votre nom et prenom , continuez quand meme ?":"Your phone number does not match with your name and first name, do you want to continue?",
   "Confirmation":"Confirmation",
-  "Êtes-vous sûr de vouloir vous déconnecter ?":"Are you sure you want to log out?"
+  "Êtes-vous sûr de vouloir vous déconnecter ?":"Are you sure you want to log out?",
+  "Existing_Account":"Existing Account",
+  "You_already_have_an_account._Please_log_in.":"You already have an account. Please log in."
   }

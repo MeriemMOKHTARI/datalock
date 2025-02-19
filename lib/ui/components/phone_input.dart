@@ -17,14 +17,12 @@ import '../../services/auth_service.dart';
 
 class PhoneInput extends flutter.StatefulWidget {
   final Function(String userId, String phoneNumber, String result, String entry_id) onSubmit;
-    final VoidCallback onLoginTap;
-
+  final VoidCallback onLoginTap;
 
   const PhoneInput({
     flutter.Key? key,
     required this.onSubmit,
-        required this.onLoginTap,
-
+    required this.onLoginTap,
     required AuthRepository authRepository,
   }) : super(key: key);
 
@@ -41,12 +39,12 @@ class _PhoneInputState extends flutter.State<PhoneInput> {
   String? ipAddress;
   bool isOtpScreen = false;
 
-   String entry_id = ID.unique();
+  String entry_id = ID.unique();
   final account = Config.getAccount();
   final databases = Config.getDatabases();
   String lastValidNumber = '';
   String? errorMessage;
-  Key _phoneFieldKey = UniqueKey(); // Added line
+  Key _phoneFieldKey = UniqueKey();
 
   bool _isNumericOnly(String str) {
     return RegExp(r'^[0-9]+$').hasMatch(str);
@@ -108,7 +106,6 @@ class _PhoneInputState extends flutter.State<PhoneInput> {
                 Navigator.of(context).pop();
                 setState(() {
                   phoneController.clear();
-                  // Force rebuild of IntlPhoneField with new country code
                   _phoneFieldKey = UniqueKey();
                 });
               },
@@ -119,88 +116,153 @@ class _PhoneInputState extends flutter.State<PhoneInput> {
     );
   }
 
-    void _sendSMS() async {
-    final authService = AuthService();
+void _sendSMS() async {
+  final authService = AuthService();
 
-    await storage.write(key: 'new_user_id', value: entry_id);
-    String result = await authService.sendSMS(
-      completePhoneNumber!,
-      "and",
-      "255.255.255.255",
-      entry_id,
-      account,
-      databases,
-    );
-  
-    print(completePhoneNumber! + "android" + "255.255.255.255" + entry_id);
-    if (result == '200') {
-      print('SMS sent successfully, navigating to OTP screen...');
-      widget.onSubmit(entry_id, completePhoneNumber!, result, entry_id);
-    } else if (result == '333') {
-      print('User is blocked');
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Blocked_User'.tr()),
-            content: Text('Your_account_has_been_blocked.'.tr()),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
+  try {
+    if (completePhoneNumber == null || completePhoneNumber!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter a valid phone number.'.tr())),
       );
+      return;
     }
+
+    Map<String, String> verifyResult = await authService.verifyUserExistence(completePhoneNumber!);
+    print("numero: " + completePhoneNumber!);
+    print("userID: " + verifyResult['userID']!);
+
+    switch (verifyResult['status']) {
+      case '200':
+        // User exists, show popup and redirect to login screen
+        print('User already exists, redirecting to login screen');
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Existing_Account'.tr()),
+              content: Text('You_already_have_an_account._Please_log_in.'.tr()),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'.tr()),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                    widget.onLoginTap(); // Redirect to login screen
+                  },
+                ),
+              ],
+            );
+          },
+        );
+        break;
+      case '333':
+        // User doesn't exist, proceed with SMS sending
+        String userID = verifyResult['userID']!;
+        String result = await authService.sendSMS(
+          completePhoneNumber!,
+          "and",
+           "255.255.255.255",
+          userID,
+          account,
+          databases,
+        );
+
+        print(completePhoneNumber! + " " + "and" + " " + ( "255.255.255.255") + " " + userID);
+        if (result == '200') {
+          print('SMS sent successfully, navigating to OTP screen...');
+          widget.onSubmit(userID, completePhoneNumber!, result, userID);
+        } else if (result == '333') {
+          print('User is blocked');
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Blocked_User'.tr()),
+                content: Text('Your_account_has_been_blocked.'.tr()),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to send SMS. Please try again.'.tr())),
+          );
+        }
+        break;
+      case '400':
+        // Missing required fields
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Missing required information. Please try again.'.tr())),
+        );
+        break;
+      default:
+        // Error occurred
+        String errorMessage = verifyResult['message'] ?? 'An unknown error occurred.';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$errorMessage Please try again.'.tr())),
+        );
+    }
+  } catch (e) {
+    print('Error in _sendSMS: $e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('An unexpected error occurred. Please try again.'.tr())),
+    );
   }
-
-  void _showConfirmationDialog() {
-    // Séparer le numéro en parties
-    final String number = completePhoneNumber ?? '';
-    final String questionMark = '?';
-    final String plus = '+';
-showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      // Condition pour formater le message
-      final String contentMessage = context.locale.languageCode == 'ar'
-          ? 'Do_you_confirm_that_your_number_is_well_there'.tr() +
-              ': ' +
-              questionMark +
-              number.substring(1) +
-              plus
-          : 'Do_you_confirm_that_your_number_is_well_there'.tr() +
-              ': ' +
-              plus +
-              number.substring(1) +
-              questionMark;
-
-      return AlertDialog(
-        title: Text('Number_Verification'.tr()),
-        content: Text(contentMessage),
-        actions: <Widget>[
-          TextButton(
-            child: Text('No'.tr()),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: Text('Yes'.tr()),
-            onPressed: () {
-              Navigator.of(context).pop();
-              _sendSMS();
-            },
-          ),
-        ],
-      );
-    },
-  );
 }
 
 
+
+
+
+
+
+    
+
+  void _showConfirmationDialog() {
+    final String number = completePhoneNumber ?? '';
+    final String questionMark = '?';
+    final String plus = '+';
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final String contentMessage = context.locale.languageCode == 'ar'
+            ? 'Do_you_confirm_that_your_number_is_well_there'.tr() +
+                ': ' +
+                questionMark +
+                number.substring(1) +
+                plus
+            : 'Do_you_confirm_that_your_number_is_well_there'.tr() +
+                ': ' +
+                plus +
+                number.substring(1) +
+                questionMark;
+
+        return AlertDialog(
+          title: Text('Number_Verification'.tr()),
+          content: Text(contentMessage),
+          actions: <Widget>[
+            TextButton(
+              child: Text('No'.tr()),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Yes'.tr()),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _sendSMS();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   flutter.Widget build(flutter.BuildContext context) {
@@ -232,7 +294,7 @@ showDialog(
                 borderRadius: flutter.BorderRadius.circular(12),
               ),
               child: IntlPhoneField(
-                key: _phoneFieldKey, // Added key
+                key: _phoneFieldKey,
                 controller: phoneController,
                 decoration: flutter.InputDecoration(
                   hintText: 'phone_number'.tr(),
@@ -302,31 +364,29 @@ showDialog(
               onPressed: isPhoneValid ? _showConfirmationDialog : null,
               text: 'login'.tr(),
             ),
-
-                 flutter.SizedBox(height: 16),
+            flutter.SizedBox(height: 16),
             flutter.Center(
               child: flutter.GestureDetector(
-          onTap: widget.onLoginTap,
-  child: flutter.RichText(
-    text: flutter.TextSpan(
-      style: flutter.TextStyle(
-        color: flutter.Colors.grey[600],
-        fontSize: 14,
-      ),
-      children: [
-        flutter.TextSpan(text: 'Déja inscrit ?'.tr() + ' '),
-        flutter.TextSpan(
-          text: 'connectez-vous'.tr(),
-          style: flutter.TextStyle(
-            decoration: flutter.TextDecoration.underline,
-            color: flutter.Theme.of(context).primaryColor,
-          ),
-        ),
-      ],
-    ),
-  ),
-),
-             
+                onTap: widget.onLoginTap,
+                child: flutter.RichText(
+                  text: flutter.TextSpan(
+                    style: flutter.TextStyle(
+                      color: flutter.Colors.grey[600],
+                      fontSize: 14,
+                    ),
+                    children: [
+                      flutter.TextSpan(text: 'Déja inscrit ?'.tr() + ' '),
+                      flutter.TextSpan(
+                        text: 'connectez-vous'.tr(),
+                        style: flutter.TextStyle(
+                          decoration: flutter.TextDecoration.underline,
+                          color: flutter.Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -346,3 +406,4 @@ class PhoneNumber {
     required this.isoCode,
   });
 }
+

@@ -36,7 +36,7 @@ class AuthService {
         .setSelfSigned(status: true);
     Functions functions = Functions(client);
     final storage = FlutterSecureStorage();
-    final id = await storage.read(key: 'new_user_id');
+    final id = await storage.read(key: 'user_id');
     await storage.write(key: 'phoneNumber' , value: phoneNumber);
     try {
       Execution result = await functions.createExecution(
@@ -72,8 +72,7 @@ class AuthService {
   }
 
   // ignore: non_constant_identifier_names
-  Future<String> VerifyOTP(String phoneNumber, String otp, String entry_id,Account account,
-      Databases databases) async {
+ Future<String> VerifyOTP(String phoneNumber, String otp, String entry_id, Account account, Databases databases) async {
     Client client = Client()
         .setEndpoint(Config.appwriteEndpoint)
         .setProject(Config.appwriteProjectId)
@@ -81,14 +80,18 @@ class AuthService {
     Functions functions = Functions(client);
     final storage = FlutterSecureStorage();
     final id = await storage.read(key: 'new_user_id');
-    print('new id : '+ id!);
+    if (id == null) {
+      print('Error: new_user_id is null');
+      return 'ERR_NULL_ID';
+    }
+    print('new id : ' + id);
     try {
       Execution result = await functions.createExecution(
         functionId: "6744a9f8001f83732f40",
         body: json.encode({
           "phoneNumber": phoneNumber,
           "otpInput": otp,
-              "userID":id,
+          "userID": id,
         }),
       );
       print('Function execution status: ${result.status}');
@@ -98,7 +101,6 @@ class AuthService {
         print('Decoded response body: $responseBody');
 
         if (responseBody['status'] == '200') {
-          // Changed from 200 to 'OK' to match potential string response
           return '200';
         } else if (responseBody['status'] == '400') {
           return '400';
@@ -111,9 +113,12 @@ class AuthService {
         return 'ERR';
       }
     } catch (e) {
+      print('Error in VerifyOTP: $e');
       return 'ERR';
     }
   }
+
+
 
   void startCountdown(int seconds, Function(String) updateTime) {
     Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -322,4 +327,59 @@ Future<Map<String, String>> logoutUser(String sessionsID,
       return {'status':'ERR'};
     }
   }
+
+  Future<Map<String, String>> verifyUserExistence(String phoneNumber) async {
+  Client client = Client()
+      .setEndpoint(Config.appwriteEndpoint)
+      .setProject(Config.appwriteProjectId)
+      .setSelfSigned(status: true);
+  Functions functions = Functions(client);
+  
+  final storage = FlutterSecureStorage();
+
+  try {
+    Execution result = await functions.createExecution(
+      functionId: "verifyUserExistence",
+      body: json.encode({
+        "phoneNumber": phoneNumber,
+      }),
+      method: ExecutionMethod.pOST,
+    );
+    
+    if (result.status == 'completed') {
+      final responseBody = json.decode(result.responseBody);
+      print('verifyUserExistence response: $responseBody');
+      
+      if (responseBody['status'] == '200') {
+        print('User exists');
+        String existingUserID = responseBody['userID'] ?? '';
+        await storage.write(key: 'user_id', value: existingUserID);
+        return {
+          'status': '200',
+          'userID': existingUserID,
+        };
+      } else if (responseBody['status'] == '333') {
+        print('User does not exist');
+        String newUserID = ID.unique();
+        await storage.write(key: 'user_id', value: newUserID);
+        return {
+          'status': '333',
+          'userID': newUserID,
+        };
+      } else if (responseBody['status'] == '400') {
+        print('Missing required fields');
+        return {'status': '400', 'message': 'Missing required fields'};
+      } else {
+        print('Unknown status: ${responseBody['status']}');
+        return {'status': 'ERR', 'message': 'Unknown error'};
+      }
+    } else {
+      print('Function execution failed: ${result.status}');
+      return {'status': 'ERR', 'message': 'Function execution failed'};
+    }
+  } catch (e) {
+    print('Error in verifyUserExistence: $e');
+    return {'status': 'ERR', 'message': e.toString()};
+  }
+}
 }

@@ -1,6 +1,8 @@
+import 'package:appwrite/appwrite.dart';
+import 'package:datalock/ui/screens/HomePage.dart';
 import 'package:flutter/material.dart';
 import '../widgets/custom_button.dart';
-import './HomePage.dart';
+import 'HomeContent.dart';
 import '../../config/config.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -23,6 +25,8 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
   'Tamanghasset', 'Tébessa', 'Tiaret', 'Tindouf', 'Tipaza', 'Tissemsilt', 
   'Tizi Ouzou', 'Tlemcen'
 ];
+  final account = Config.getAccount();
+
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +107,7 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
 void _handleCityConfirmation() {
   if (_selectedCity == 'Oran') {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const HomePage()),
+      MaterialPageRoute(builder: (context) =>  HomePage()),
     );
   } else {
     _showCityAlert();

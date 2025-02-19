@@ -1,8 +1,9 @@
+import 'package:datalock/ui/screens/HomePage.dart';
 import 'package:flutter/material.dart';
 import '../widgets/permission_card.dart';
 import '../../services/permissions_service.dart';
 import './city_selection_screen.dart';
-import './HomePage.dart';
+import 'HomeContent.dart';
 import '../../config/config.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -15,6 +16,7 @@ class PermissionsScreen extends StatefulWidget {
 
 class _PermissionsScreenState extends State<PermissionsScreen> {
   final PermissionsService _permissionsService = PermissionsService();
+  final account = Config.getAccount();
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +91,7 @@ class _PermissionsScreenState extends State<PermissionsScreen> {
   
   void _navigateToHomePage() {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const HomePage()),
+      MaterialPageRoute(builder: (context) =>  HomePage()),
     );
   }
 }

@@ -182,7 +182,9 @@
   "Veuillez indiquer vos coordonnées pour récupérer votre compte":"Veuillez indiquer vos coordonnées pour récupérer votre compte",
   "Connexion":"Connexion",
   "Confirmation":"Confirmation",
-  "Êtes-vous sûr de vouloir vous déconnecter ?":"Êtes-vous sûr de vouloir vous déconnecter ?"
+  "Êtes-vous sûr de vouloir vous déconnecter ?":"Êtes-vous sûr de vouloir vous déconnecter ?",
+  "Existing_Account":"Compte existant",
+  "You_already_have_an_account._Please_log_in.":"Vous avez déjà un compte. Veuillez vous connecter."
 
 
   }

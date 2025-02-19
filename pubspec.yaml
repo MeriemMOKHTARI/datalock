@@ -51,6 +51,12 @@ dependencies:
   package_info_plus: ^8.1.2
   geolocator: ^10.0.0
   permission_handler: ^11.0.0
+  curved_navigation_bar: ^1.0.3
+  font_awesome_flutter: ^10.7.0
+  animated_notch_bottom_bar: ^1.0.3
+  salomon_bottom_bar: ^3.3.2
+  google_maps_flutter: ^2.10.0
+
 
 
 dev_dependencies:

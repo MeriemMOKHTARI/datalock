@@ -3,7 +3,7 @@ import 'package:datalock/ui/screens/permissions_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart' as flutter_widgets; // Add this import
+import 'package:flutter/widgets.dart' as flutter_widgets;
 import 'package:appwrite/appwrite.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -45,7 +45,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   String? _name;
   String? _prenom;
   String? _entry_id;
-  bool _isNewUser = true; // New flag to track if it's a new user
+  bool _isNewUser = true;
 
   bool isNameScreen = false;
   bool isOtpScreen = false;
@@ -80,8 +80,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   void _changeLanguage(String languageCode) async {
-    await context.setLocale(
-        flutter_widgets.Locale(languageCode)); // Use flutter_widgets.Locale
+    await context.setLocale(flutter_widgets.Locale(languageCode));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('locale', languageCode);
   }
@@ -93,7 +92,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       _phoneNumber = phoneNumber;
       isLoginScreen = false;
       isOtpScreen = true;
-      _isNewUser = false; // Set to false when navigating from login
+      _isNewUser = false;
     });
   }
 
@@ -182,7 +181,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                               ? OtpInput(
                                   onBack: () => setState(() {
                                     isOtpScreen = false;
-                                    // isLoginScreen = true;
                                   }),
                                   onVerify: (String otp) async {
                                     // Implement OTP verification logic
@@ -197,8 +195,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                       String result,
                                       String? name,
                                       String? prenom) async {
+                                    print('OTP onSubmit called with result: $result');
                                     if (result == '200') {
+                                      print('OTP verification successful');
                                       if (_isNewUser) {
+                                        print('New user, navigating to name input');
                                         setState(() {
                                           _userId = userId;
                                           _phoneNumber = phoneNumber;
@@ -208,6 +209,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                           isOtpScreen = false;
                                         });
                                       } else {
+                                        print('Existing user, verifying user details');
                                         Map<String, String> verifyResult =
                                             await _authService.verifyUser(
                                           name ?? '',
@@ -217,39 +219,31 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                           widget.databases,
                                         );
                                         if (verifyResult['status'] == '200') {
-                                          //  String userID = verifyResult['userID'] ?? '';
-                                           final String? userID;
-                                             userID = (await storage.read(key: 'new_user_id')) ;
-                                        print(await storage.read(key: 'new_user_id'));
-                                       print("meriemmmmm"+phoneNumber+userId);
-                                          Map<String, String> result2 =await _authService.uploadUserSession(
+                                          final String? userID = await storage.read(key: 'new_user_id');
+                                          print(await storage.read(key: 'new_user_id'));
+                                          print("meriemmmmm"+phoneNumber+userId);
+                                          Map<String, String> result2 = await _authService.uploadUserSession(
                                             phoneNumber,
                                             userId,
                                             widget.account,
                                             widget.databases,
                                           );
                                           if (result2['status'] == '200') {
-                                            String sessionId =result2['session_id'] ?? '';
-                                            // String userID = verifyResult['userID'] ?? '';
-                                            final String? userID;
-                                             userID = (await storage.read(key: 'new_user_id')) ;
-                                            await saveUserSession( phoneNumber, userId, sessionId);
+                                            String sessionId = result2['session_id'] ?? '';
+                                            final String? userID = await storage.read(key: 'new_user_id');
+                                            await saveUserSession(phoneNumber, userId, sessionId);
                                             print('session saved successfully');
                                             Navigator.pushReplacement(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) =>
-                                                    PermissionsScreen(),
+                                                builder: (context) => PermissionsScreen(),
                                               ),
                                             );
-                                          } else if (result2['status'] ==
-                                              '400') {
-                                            print(
-                                                'please provide all informations');
+                                          } else if (result2['status'] == '400') {
+                                            print('please provide all informations');
                                           } else {
                                             print('session not saved');
                                           }
-                                          // _navigateToHome();
                                         } else {
                                           setState(() {
                                             _userId = userId;
@@ -261,6 +255,16 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                           });
                                         }
                                       }
+                                    } else if (result == 'ERR_NULL_ID') {
+                                      print('Error: new_user_id is null');
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text('An error occurred. Please try again.'.tr())),
+                                      );
+                                    } else {
+                                      print('OTP verification failed with result: $result');
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text('OTP verification failed. Please try again.'.tr())),
+                                      );
                                     }
                                   },
                                 )
@@ -287,10 +291,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                           onSubmit: (String userId,
                                               String phoneNumber,
                                               String result,
-                                              String entry_id) {
+                                              String entry_id) async {
                                             print(
                                                 'Phone input result: $result');
                                             if (result == '200') {
+                                              await storage.write(key: 'new_user_id', value: userId);
                                               setState(() {
                                                 _phoneNumber = phoneNumber;
                                                 _platform = getPlatform();
@@ -298,8 +303,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                                 _userId = userId;
                                                 _entry_id = entry_id;
                                                 isOtpScreen = true;
-                                                _isNewUser =
-                                                    true; // Set to true for new sign-ups
+                                                _isNewUser = true;
                                               });
                                             }
                                           },
@@ -392,3 +396,4 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     );
   }
 }
+

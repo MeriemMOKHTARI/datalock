@@ -181,7 +181,9 @@
   "Connexion":"Conectar",
   "Votre N° de telephone ne correspond pas avec votre nom et prenom , continuez quand meme ?":"Tu número de telefono no coincide con tu nombre y primer nombre, quieres continuar?",
   "Confirmation":"Confirmar",
-  "Êtes-vous sûr de vouloir vous déconnecter ?":"Estas seguro de querer desconectarte?"
+  "Êtes-vous sûr de vouloir vous déconnecter ?":"Estas seguro de querer desconectarte?",
+  "Existing_Account":"Cuenta existente",
+  "You_already_have_an_account._Please_log_in.":"Ya tienes una cuenta. Por favor, conectate."
     
 
   }

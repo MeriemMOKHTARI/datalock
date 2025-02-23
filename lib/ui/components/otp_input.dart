@@ -1,18 +1,20 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:datalock/config/config.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as flutter;
 import '../../data/repositories/auth_repository.dart';
 import '../widgets/otp_field.dart';
-import '../widgets/custom_button.dart';
+import '../widgets/custom_button.dart' as flutter;
 import '../../services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class OtpInput extends StatefulWidget {
+class OtpInput extends flutter.StatefulWidget {
   final Function(String userId, String phoneNumber, String result, String? name, String? prenom) onSubmit;
   final VoidCallback onBack;
   final Function(String otp) onVerify;
@@ -38,7 +40,7 @@ class OtpInput extends StatefulWidget {
   _OtpInputState createState() => _OtpInputState();
 }
 
-class _OtpInputState extends State<OtpInput> {
+class _OtpInputState extends flutter.State<OtpInput> {
   final List<TextEditingController> otpControllers =
       List.generate(4, (index) => TextEditingController());
   String remainingTime = '';
@@ -47,6 +49,8 @@ class _OtpInputState extends State<OtpInput> {
   String? ipAddress;
   final account = Config.getAccount();
   final databases = Config.getDatabases();
+
+  String? cachedUserId;
 
   String getPlatform() {
     if (kIsWeb) {
@@ -65,6 +69,17 @@ class _OtpInputState extends State<OtpInput> {
     super.initState();
     fetchAndSetIpAddress();
     startCountdown();
+    _loadCachedUserId();
+  }
+
+  Future<void> _loadCachedUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      cachedUserId = prefs.getString('cached_user_id');
+    });
+    if (cachedUserId == null) {
+      print("Attention : L'ID utilisateur mis en cache est null");
+    }
   }
 
   @override
@@ -166,16 +181,16 @@ class _OtpInputState extends State<OtpInput> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+  flutter.Widget build(flutter.BuildContext context) {
+    return flutter.SingleChildScrollView(
+      child: flutter.Container(
+        padding: flutter.EdgeInsets.all(24),
+        child: flutter.Column(
+          crossAxisAlignment: flutter.CrossAxisAlignment.start,
           children: [
-            Row(
+            flutter.Row(
               children: [
-                IconButton(
+                flutter.IconButton(
                   icon: Icon(Icons.arrow_back),
                   onPressed: widget.onBack,
                 ),
@@ -200,7 +215,7 @@ class _OtpInputState extends State<OtpInput> {
               ),
             ),
             SizedBox(height: 16),
-             Row(
+             flutter.Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
                 otpControllers.length,
@@ -254,38 +269,45 @@ class _OtpInputState extends State<OtpInput> {
             ),
           ),
             SizedBox(height: 24),
-         CustomButton(
-  onPressed: () async {
-    final authService = AuthService();
-    String result = await authService.VerifyOTP(
-      widget.phoneNumber,
-      otpControllers.map((controller) => controller.text).join(''),
-      widget.entry_id,
-      account,
-      databases,
-    );
-    print(widget.phoneNumber +
-        otpControllers.map((controller) => controller.text).join('') +
-        widget.entry_id +
-        result);
-    if (result == '200') {
-      await widget.onSubmit(widget.userId, widget.phoneNumber, result, widget.name, widget.prenom);
-    } else if (result == '400') {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('please_provide_a_valid_OTP'.tr())),
-      );
-    } else if (result == '333') {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('incorrect_OTP'.tr())),
-      );
-    } else if (result == 'ERR') {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erreur de connexion.Merci d\'essayer à nouveau.'.tr())),
-      );
-    }
-  },
-  text: 'Continue'.tr(),
-),
+         flutter.CustomButton(
+              onPressed: () async {
+                if (cachedUserId == null) {
+                  print("Erreur : L'ID utilisateur mis en cache est null");
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Une erreur est survenue. Veuillez réessayer.'.tr())),
+                  );
+                  return;
+                }
+                
+                final authService = AuthService();
+                String result = await authService.VerifyOTP(
+                  widget.phoneNumber,
+                  otpControllers.map((controller) => controller.text).join(''),
+                  cachedUserId!, // Utilisation de l'ID utilisateur mis en cache
+                  account,
+                  databases,
+                );
+                print("Vérification OTP pour l'utilisateur : $cachedUserId");
+                print("Résultat de la vérification : $result");
+                
+                if (result == '200') {
+                  await widget.onSubmit(cachedUserId!, widget.phoneNumber, result, widget.name, widget.prenom);
+                } else if (result == '400') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('please_provide_a_valid_OTP'.tr())),
+                  );
+                } else if (result == '333') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('incorrect_OTP'.tr())),
+                  );
+                } else if (result == 'ERR') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Erreur de connexion. Merci d\'essayer à nouveau.'.tr())),
+                  );
+                }
+              },
+              text: 'Continue'.tr(),
+            ),
             SizedBox(height: 16),
             Center(
               child: Row(
@@ -329,3 +351,4 @@ class _OtpInputState extends State<OtpInput> {
     );
   }
 }
+

@@ -160,7 +160,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    height: screenHeight * 0.6,
+                    height: screenHeight * 0.7,
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -396,4 +396,3 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     );
   }
 }
-

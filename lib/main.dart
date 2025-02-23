@@ -52,7 +52,8 @@ class MyApp extends flutter.StatelessWidget {
       locale: context.locale,
       title: 'app_name'.tr(),
       theme: Config.themeData,
-      home: HomePage(),
+      home: AuthenticationScreen(account: account, databases: databases, functions: functions),
+      // HomePage(),
       //  SplashScreen(
       //   account: account,
       //   databases: databases,
